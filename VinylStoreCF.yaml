@@ -15,7 +15,8 @@ Resources:
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
       Environment:
         Variables:
-          VINYLS_TABLE: Vinyls
+          VINYLS_TABLE:
+            Ref: DynamoDBTableName
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
@@ -62,7 +63,7 @@ Resources:
       MethodResponses:
         - StatusCode: '200'
       Integration:
-        Type: AWS
+        Type: AWS_PROXY
         IntegrationResponses:
           - StatusCode: '200'
         IntegrationHttpMethod: POST
