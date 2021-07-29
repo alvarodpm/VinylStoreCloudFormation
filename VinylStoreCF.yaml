@@ -12,11 +12,6 @@ Resources:
       Handler: index.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdaGET.Arn
-      VpcConfig:
-        SecurityGroupIds: 
-          Ref: SecurityGroups
-        SubnetIds: 
-          Ref: Subnets
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
       Environment:
         Variables:
@@ -130,10 +125,6 @@ Resources:
         - Key: user
           Value: plata.marquez.alvaro
 Parameters:
-  SecurityGroups:
-    Type: List<AWS::EC2::SecurityGroup::Id>
-  Subnets:
-    Type: List<AWS::EC2::Subnet::Id>
   LambdaFuncGETName:
     Type: String
     Default: VinylStoreLambdaGET
