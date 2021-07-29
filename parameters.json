@@ -1,0 +1,9 @@
+[
+	{
+		"ParameterKey":"SecurityGroups",
+		"ParameterValue":["sg-06a3156b3ac91b6ff"]},
+	{
+		"ParameterKey":"Subnets",
+		"ParameterValue":["subnet-0da52a6cd65ddd72c"]
+	}
+]
