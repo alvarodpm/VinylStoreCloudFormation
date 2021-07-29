@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Vinyl Store Application Stack
+Description: Vinyl Store Application Stack deployed with Azure Devops Pipelines
 Resources:
   VinylStoreLambdaGET:
     Type: AWS::Lambda::Function
