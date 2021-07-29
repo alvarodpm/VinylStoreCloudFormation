@@ -24,8 +24,6 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
-        - Key: testPipeline
-          Value: plata.marquez.alvaro
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
