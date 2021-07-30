@@ -475,7 +475,21 @@ Resources:
                   - ec2:DescribeInstances
                   - ec2:AttachNetworkInterface
                 Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:*
+                Resource: '*'
       RoleName: VinylStoreRoleLambdaDELETE
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
+  VinylStoreMicroservicesS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: 
+        !Ref MicroservicesS3BucketName
+      VersioningConfiguration:
+        Status: Enabled
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
@@ -507,3 +521,9 @@ Parameters:
   EnvironmentName:
     Type: String
     Default: Prod
+  MicroservicesS3BucketName:
+    Type: String
+    Default: vinylstore-microservices-bucket
+  DELETEMicroserviceS3BucketKey:
+    Type: String
+    Default: DELETE_Vinyl_Service/delete_vinyl_service
