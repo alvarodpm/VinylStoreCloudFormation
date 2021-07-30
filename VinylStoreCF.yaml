@@ -21,6 +21,26 @@ Resources:
         - Key: user
           Value: plata.marquez.alvaro
     DependsOn: VinylStoreDynamoDBTable
+  VinylStoreLambdaGETALL:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile: 
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');", "const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","  let body;","  let statusCode = 200;","  const headers = {","'Content-Type': 'application/json'","};","try {","body = await dynamo.scan({ TableName: TABLE_NAME }).promise();","} catch (err) {","statusCode = 400;","body = err.message;","} finally {","body = JSON.stringify(body);","}","return {","statusCode,","body,","headers","};","};"] ]
+      FunctionName: 
+        !Ref LambdaFuncGETALLName
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt VinylStoreRoleLambdaGETALL.Arn
+      Description: Lambda function created to handle the GET ALL requests of the Vinyl Store application
+      Environment:
+        Variables:
+          VINYLS_TABLE:
+            Ref: DynamoDBTableName
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
+    DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -36,7 +56,9 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
-    DependsOn: VinylStoreRoleLambdaGET
+    DependsOn: 
+      - VinylStoreRoleLambdaGET
+      - VinylStoreRoleLambdaGETALL
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -46,13 +68,15 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
-    DependsOn: VinylStoreLambdaGET
+    DependsOn: 
+      - VinylStoreLambdaGET
+      - VinylStoreLambdaGETALL
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
       ParentId: !GetAtt 'VinylStoreAPIGatewayRESTAPI.RootResourceId'
-      PathPart: !Ref 'LambdaFuncGETName'
+      PathPart: !Ref 'APIGatewayResourceVinylsPathPart'
   VinylStoreAPIGatewayMethodGET:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -68,18 +92,42 @@ Resources:
           - StatusCode: '200'
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGET.Arn}/invocations'
+  VinylStoreAPIGatewayMethodGETALL:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
+      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      HttpMethod: GET
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: '200'
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETALL.Arn}/invocations'
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
       Description: Deployment for the Frontend to connect to the API Gateway
       RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
       StageName: !Ref 'EnvironmentName'
-    DependsOn: VinylStoreAPIGatewayMethodGET
+    DependsOn: 
+      - VinylStoreAPIGatewayMethodGET
+      - VinylStoreAPIGatewayMethodGETALL
   VinylStoreLambdaGETPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt 'VinylStoreLambdaGET.Arn'
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaGETALLPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt 'VinylStoreLambdaGETALL.Arn'
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreRoleLambdaGET:
@@ -95,10 +143,9 @@ Resources:
             Action:
               - sts:AssumeRole
       Path: /
-      Description: Role to assign to the Lambda dedicated to get one individual Vinyl
-        from the DynamoDB Table
+      Description: Role to assign to the Lambda dedicated to get one individual Vinyl from the DynamoDB Table
       Policies:
-        - PolicyName: VinylStorePolicy
+        - PolicyName: VinylStoreRoleLambdaGETPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -125,10 +172,59 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
+  VinylStoreRoleLambdaGETALL:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Description: Role to assign to the Lambda dedicated to get all the Vinyls from the DynamoDB Table
+      Policies:
+        - PolicyName: VinylStoreRoleLambdaGETALLPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchGetItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: '*'
+      RoleName: VinylStoreRoleLambdaGETALL
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
 Parameters:
+  APIGatewayResourceVinylsPathPart:
+    Type: String
+    Default: vinyls
   LambdaFuncGETName:
     Type: String
     Default: VinylStoreLambdaGET
+  LambdaFuncGETALLName:
+    Type: String
+    Default: VinylStoreLambdaGETALL
   DynamoDBTableName:
     Type: String
     Default: VinylStoreDynamoDBTable
