@@ -141,7 +141,7 @@ Resources:
         Type: AWS_PROXY
         IntegrationResponses:
           - StatusCode: '200'
-        IntegrationHttpMethod: PUT
+        IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATE.Arn}/invocations'
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
