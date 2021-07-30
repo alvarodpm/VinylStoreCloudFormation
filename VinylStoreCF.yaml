@@ -61,6 +61,26 @@ Resources:
         - Key: user
           Value: plata.marquez.alvaro
     DependsOn: VinylStoreDynamoDBTable
+  VinylStoreLambdaPOST:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
+      FunctionName: 
+        !Ref LambdaFuncPOSTName
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt VinylStoreRoleLambdaPOST.Arn
+      Description: Lambda function created to handle the POST requests of the Vinyl Store application
+      Environment:
+        Variables:
+          VINYLS_TABLE:
+            Ref: DynamoDBTableName
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
+    DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -92,6 +112,7 @@ Resources:
       - VinylStoreLambdaGET
       - VinylStoreLambdaGETALL
       - VinylStoreLambdaUPDATE
+      - VinylStoreLambdaPOST
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -143,6 +164,21 @@ Resources:
           - StatusCode: '200'
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATE.Arn}/invocations'
+  VinylStoreAPIGatewayMethodPOST:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
+      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      HttpMethod: POST
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: '200'
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOST.Arn}/invocations'
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
@@ -153,6 +189,7 @@ Resources:
       - VinylStoreAPIGatewayMethodGET
       - VinylStoreAPIGatewayMethodGETALL
       - VinylStoreAPIGatewayMethodUPDATE
+      - VinylStoreAPIGatewayMethodPOST
   VinylStoreLambdaGETPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -172,6 +209,13 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt 'VinylStoreLambdaUPDATE.Arn'
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaPOSTPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt 'VinylStoreLambdaPOST.Arn'
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreRoleLambdaGET:
@@ -303,6 +347,49 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
+  VinylStoreRoleLambdaPOST:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Description: Role to assign to the Lambda dedicated to POST a Vinyl from the DynamoDB Table
+      Policies:
+        - PolicyName: VinylStoreRoleLambdaPOSTPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: '*'
+      RoleName: VinylStoreRoleLambdaPOST
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
 Parameters:
   APIGatewayResourceVinylsPathPart:
     Type: String
@@ -316,6 +403,9 @@ Parameters:
   LambdaFuncGETALLName:
     Type: String
     Default: VinylStoreLambdaGETALL
+  LambdaFuncPOSTName:
+    Type: String
+    Default: VinylStoreLambdaPOST
   DynamoDBTableName:
     Type: String
     Default: VinylStoreDynamoDBTable
