@@ -41,6 +41,26 @@ Resources:
         - Key: user
           Value: plata.marquez.alvaro
     DependsOn: VinylStoreDynamoDBTable
+  VinylStoreLambdaUPDATE:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');", "const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","  let body;","  let statusCode = 200;","  const headers = {","    'Content-Type': 'application/json'","  };","  try {","    let requestJSON = JSON.parse(event.body);","    body = await dynamo.update({","        TableName: TABLE_NAME,","        Key:{","id: event.pathParameters.id","},","UpdateExpression: 'set name=:newName, artist=:newArtist, genre=:newGenre, year=:newYear',","ExpressionAttributeValues:{","':newName':requestJSON.name,","':newArtist':requestJSON.artist,","':newGenre':requestJSON.genre,","':newYear':requestJSON.year","':newYear':requestJSON.year","ReturnValues:'UPDATED_NEW'","}).promise();","body = `UPDATE Vinyl ${requestJSON.id}`;","} catch (err) {","statusCode = 400;","body = err.message;","} finally {","body = JSON.stringify(body);}","return {statusCode,body,headers};};"] ]
+      FunctionName: 
+        !Ref LambdaFuncUPDATEName
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt VinylStoreRoleLambdaUPDATE.Arn
+      Description: Lambda function created to handle the UPDATE requests of the Vinyl Store application
+      Environment:
+        Variables:
+          VINYLS_TABLE:
+            Ref: DynamoDBTableName
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
+    DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -71,6 +91,7 @@ Resources:
     DependsOn: 
       - VinylStoreLambdaGET
       - VinylStoreLambdaGETALL
+      - VinylStoreLambdaUPDATE
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -107,6 +128,21 @@ Resources:
           - StatusCode: '200'
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETALL.Arn}/invocations'
+  VinylStoreAPIGatewayMethodUPDATE:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
+      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      HttpMethod: PUT
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: '200'
+        IntegrationHttpMethod: PUT
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATE.Arn}/invocations'
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
@@ -116,6 +152,7 @@ Resources:
     DependsOn: 
       - VinylStoreAPIGatewayMethodGET
       - VinylStoreAPIGatewayMethodGETALL
+      - VinylStoreAPIGatewayMethodUPDATE
   VinylStoreLambdaGETPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -128,6 +165,13 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt 'VinylStoreLambdaGETALL.Arn'
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaUPDATEPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt 'VinylStoreLambdaUPDATE.Arn'
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreRoleLambdaGET:
@@ -215,10 +259,57 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
+  VinylStoreRoleLambdaUPDATE:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Description: Role to assign to the Lambda dedicated to update a Vinyl from the DynamoDB Table
+      Policies:
+        - PolicyName: VinylStoreRoleLambdaUPDATEPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:PutItem
+                  - dynamodb:Query
+                  - dynamodb:UpdateItem
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: '*'
+      RoleName: VinylStoreRoleLambdaUPDATE
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
 Parameters:
   APIGatewayResourceVinylsPathPart:
     Type: String
     Default: vinyls
+  LambdaFuncUPDATEName:
+    Type: String
+    Default: VinylStoreLambdaUPDATE
   LambdaFuncGETName:
     Type: String
     Default: VinylStoreLambdaGET
