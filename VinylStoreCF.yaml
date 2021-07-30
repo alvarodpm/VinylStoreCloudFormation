@@ -119,6 +119,9 @@ Resources:
     DependsOn: 
       - VinylStoreRoleLambdaGET
       - VinylStoreRoleLambdaGETALL
+      - VinylStoreRoleLambdaPOST
+      - VinylStoreRoleLambdaUPDATE
+      - VinylStoreRoleLambdaDELETE
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
