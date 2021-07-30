@@ -81,6 +81,26 @@ Resources:
         - Key: user
           Value: plata.marquez.alvaro
     DependsOn: VinylStoreDynamoDBTable
+  VinylStoreLambdaDELETE:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
+      FunctionName: 
+        !Ref LambdaFuncDELETEName
+      Handler: index.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt VinylStoreRoleLambdaDELETE.Arn
+      Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
+      Environment:
+        Variables:
+          VINYLS_TABLE:
+            Ref: DynamoDBTableName
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
+    DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -113,6 +133,7 @@ Resources:
       - VinylStoreLambdaGETALL
       - VinylStoreLambdaUPDATE
       - VinylStoreLambdaPOST
+      - VinylStoreLambdaDELETE
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -179,6 +200,21 @@ Resources:
           - StatusCode: '200'
         IntegrationHttpMethod: POST
         Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOST.Arn}/invocations'
+  VinylStoreAPIGatewayMethodDELETE:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
+      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      HttpMethod: DELETE
+      AuthorizationType: NONE
+      MethodResponses:
+        - StatusCode: '200'
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: '200'
+        IntegrationHttpMethod: POST
+        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETE.Arn}/invocations'
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
@@ -190,6 +226,7 @@ Resources:
       - VinylStoreAPIGatewayMethodGETALL
       - VinylStoreAPIGatewayMethodUPDATE
       - VinylStoreAPIGatewayMethodPOST
+      - VinylStoreAPIGatewayMethodDELETE
   VinylStoreLambdaGETPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -216,6 +253,13 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt 'VinylStoreLambdaPOST.Arn'
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaDELETEPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt 'VinylStoreLambdaDELETE.Arn'
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreRoleLambdaGET:
@@ -390,6 +434,48 @@ Resources:
       Tags:
         - Key: user
           Value: plata.marquez.alvaro
+  VinylStoreRoleLambdaDELETE:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Description: Role to assign to the Lambda dedicated to DELETE a Vinyl from the DynamoDB Table
+      Policies:
+        - PolicyName: VinylStoreRoleLambdaDELETEPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - ec2:DescribeNetworkInterfaces
+                  - ec2:CreateNetworkInterface
+                  - ec2:DeleteNetworkInterface
+                  - ec2:DescribeInstances
+                  - ec2:AttachNetworkInterface
+                Resource: '*'
+      RoleName: VinylStoreRoleLambdaDELETE
+      Tags:
+        - Key: user
+          Value: plata.marquez.alvaro
 Parameters:
   APIGatewayResourceVinylsPathPart:
     Type: String
@@ -397,6 +483,9 @@ Parameters:
   LambdaFuncUPDATEName:
     Type: String
     Default: VinylStoreLambdaUPDATE
+  LambdaFuncDELETEName:
+    Type: String
+    Default: VinylStoreLambdaDELETE
   LambdaFuncGETName:
     Type: String
     Default: VinylStoreLambdaGET
