@@ -11,7 +11,7 @@ Resources:
         !Ref LambdaFuncGETName
       Handler: index.handler
       Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdaGET.Arn
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
       Environment:
         Variables:
@@ -19,7 +19,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaGETALL:
     Type: AWS::Lambda::Function
@@ -31,7 +31,7 @@ Resources:
         !Ref LambdaFuncGETALLName
       Handler: index.handler
       Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdaGETALL.Arn
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the GET ALL requests of the Vinyl Store application
       Environment:
         Variables:
@@ -39,7 +39,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaUPDATE:
     Type: AWS::Lambda::Function
@@ -51,7 +51,7 @@ Resources:
         !Ref LambdaFuncUPDATEName
       Handler: index.handler
       Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdaUPDATE.Arn
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the UPDATE requests of the Vinyl Store application
       Environment:
         Variables:
@@ -59,7 +59,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaPOST:
     Type: AWS::Lambda::Function
@@ -71,7 +71,7 @@ Resources:
         !Ref LambdaFuncPOSTName
       Handler: index.handler
       Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdaPOST.Arn
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the POST requests of the Vinyl Store application
       Environment:
         Variables:
@@ -79,7 +79,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaDELETE:
     Type: AWS::Lambda::Function
@@ -91,7 +91,7 @@ Resources:
         !Ref LambdaFuncDELETEName
       Handler: index.handler
       Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdaDELETE.Arn
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
       Environment:
         Variables:
@@ -99,7 +99,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
@@ -115,13 +115,7 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
-    DependsOn: 
-      - VinylStoreRoleLambdaGET
-      - VinylStoreRoleLambdaGETALL
-      - VinylStoreRoleLambdaPOST
-      - VinylStoreRoleLambdaUPDATE
-      - VinylStoreRoleLambdaDELETE
+          Value: ${AWS:USERNAME}
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -130,7 +124,7 @@ Resources:
         Ref: APIName
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
     DependsOn: 
       - VinylStoreLambdaGET
       - VinylStoreLambdaGETALL
@@ -265,7 +259,7 @@ Resources:
       FunctionName: !GetAtt 'VinylStoreLambdaDELETE.Arn'
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreRoleLambdaGET:
+  VinylStoreRoleLambdas:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -278,9 +272,9 @@ Resources:
             Action:
               - sts:AssumeRole
       Path: /
-      Description: Role to assign to the Lambda dedicated to get one individual Vinyl from the DynamoDB Table
+      Description: Role to assign to all the lambda functions and control their interaction with dynamoDB
       Policies:
-        - PolicyName: VinylStoreRoleLambdaGETPolicy
+        - PolicyName: VinylStoreRoleLambdasPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -288,201 +282,24 @@ Resources:
                 Action:
                   - dynamodb:GetItem
                   - dynamodb:Query
-                Resource: '*'
+                  - dynamodb:BatchGetItem
+                  - dynamodb:Scan
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource: !GetAtt VinylStoreDynamoDBTable.Arn
               - Effect: Allow
                 Action:
                   - logs:CreateLogStream
                   - logs:CreateLogGroup
                   - logs:PutLogEvents
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:CreateNetworkInterface
-                  - ec2:DeleteNetworkInterface
-                  - ec2:DescribeInstances
-                  - ec2:AttachNetworkInterface
-                Resource: '*'
+                  - logs:DescribeLogStreams
+                Resource: arn:aws:logs:*:*:*
       RoleName: VinylStoreRoleLambdaGET
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
-  VinylStoreRoleLambdaGETALL:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: /
-      Description: Role to assign to the Lambda dedicated to get all the Vinyls from the DynamoDB Table
-      Policies:
-        - PolicyName: VinylStoreRoleLambdaGETALLPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:BatchGetItem
-                  - dynamodb:Scan
-                  - dynamodb:Query
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:CreateLogGroup
-                  - logs:PutLogEvents
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:CreateNetworkInterface
-                  - ec2:DeleteNetworkInterface
-                  - ec2:DescribeInstances
-                  - ec2:AttachNetworkInterface
-                Resource: '*'
-      RoleName: VinylStoreRoleLambdaGETALL
-      Tags:
-        - Key: user
-          Value: plata.marquez.alvaro
-  VinylStoreRoleLambdaUPDATE:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: /
-      Description: Role to assign to the Lambda dedicated to update a Vinyl from the DynamoDB Table
-      Policies:
-        - PolicyName: VinylStoreRoleLambdaUPDATEPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:BatchWriteItem
-                  - dynamodb:PutItem
-                  - dynamodb:Query
-                  - dynamodb:UpdateItem
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:CreateLogGroup
-                  - logs:PutLogEvents
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:CreateNetworkInterface
-                  - ec2:DeleteNetworkInterface
-                  - ec2:DescribeInstances
-                  - ec2:AttachNetworkInterface
-                Resource: '*'
-      RoleName: VinylStoreRoleLambdaUPDATE
-      Tags:
-        - Key: user
-          Value: plata.marquez.alvaro
-  VinylStoreRoleLambdaPOST:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: /
-      Description: Role to assign to the Lambda dedicated to POST a Vinyl from the DynamoDB Table
-      Policies:
-        - PolicyName: VinylStoreRoleLambdaPOSTPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:BatchWriteItem
-                  - dynamodb:PutItem
-                  - dynamodb:Query
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:CreateLogGroup
-                  - logs:PutLogEvents
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:CreateNetworkInterface
-                  - ec2:DeleteNetworkInterface
-                  - ec2:DescribeInstances
-                  - ec2:AttachNetworkInterface
-                Resource: '*'
-      RoleName: VinylStoreRoleLambdaPOST
-      Tags:
-        - Key: user
-          Value: plata.marquez.alvaro
-  VinylStoreRoleLambdaDELETE:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: /
-      Description: Role to assign to the Lambda dedicated to DELETE a Vinyl from the DynamoDB Table
-      Policies:
-        - PolicyName: VinylStoreRoleLambdaDELETEPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:DeleteItem
-                  - dynamodb:Query
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:CreateLogGroup
-                  - logs:PutLogEvents
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - ec2:DescribeNetworkInterfaces
-                  - ec2:CreateNetworkInterface
-                  - ec2:DeleteNetworkInterface
-                  - ec2:DescribeInstances
-                  - ec2:AttachNetworkInterface
-                Resource: '*'
-              - Effect: Allow
-                Action:
-                  - s3:*
-                Resource: '*'
-      RoleName: VinylStoreRoleLambdaDELETE
-      Tags:
-        - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
   VinylStoreMicroservicesS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -492,7 +309,7 @@ Resources:
         Status: Enabled
       Tags:
         - Key: user
-          Value: plata.marquez.alvaro
+          Value: ${AWS:USERNAME}
 Parameters:
   APIGatewayResourceVinylsPathPart:
     Type: String
