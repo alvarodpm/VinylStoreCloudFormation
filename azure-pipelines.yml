@@ -19,7 +19,7 @@ jobs:
       vmImage: vs2017-win2016
   variables:
     - name: cfn-template
-      value: $[ coalesce( variables['cloudformation-template-${{ parameters.resource }}'], variables['cloudformation-template'], variables['template'], '$(System.DefaultWorkingDirectory)/VinylStoreCF.yaml')]
+      value: '$(System.DefaultWorkingDirectory)/VinylStoreCF.yaml'
   steps:
       - checkout: self
         clean: true
