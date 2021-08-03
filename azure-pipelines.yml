@@ -13,14 +13,14 @@ parameters:
     type: string
     default: 5bd7e7ed-c091-4182-9caa-931ea7a13fe6
 variables:
-  UsernameTag: $(UsernameTag)
+  USERNAME_TAG: $(UsernameTag)
   APIGatewayResourceVinylsPathPart: $(APIGatewayResourceVinylsPathPart)
   LambdaFuncUPDATEName: $(LambdaFuncUPDATEName)
   LambdaFuncDELETEName: $(LambdaFuncDELETEName)
   LambdaFuncGETName: $(LambdaFuncGETName)
   LambdaFuncGETALLName: $(LambdaFuncGETALLName)
   LambdaFuncPOSTName: $(LambdaFuncPOSTName)
-  DynamoDBTableName: $(DynamoDBTableName)
+  DYNAMO_DB_TABLE_NAME: $(DynamoDBTableName)
   APIName: $(APIName)
   EnvironmentName: $(EnvironmentName)
   MicroservicesS3BucketName: $(MicroservicesS3BucketName)
@@ -48,7 +48,7 @@ jobs:
           templateParametersSource: "inline"
           templateParameters: |
             - ParameterKey: UsernameTag
-              ParameterValue: $(UsernameTag)
+              ParameterValue: $(USERNAME_TAG)
             - ParameterKey: APIGatewayResourceVinylsPathPart
               ParameterValue: $(APIGatewayResourceVinylsPathPart)
             - ParameterKey: LambdaFuncUPDATEName
@@ -62,7 +62,7 @@ jobs:
             - ParameterKey: LambdaFuncPOSTName
               ParameterValue: $(LambdaFuncPOSTName)
             - ParameterKey: DynamoDBTableName
-              ParameterValue: $(DynamoDBTableName)
+              ParameterValue: $(DYNAMO_DB_TABLE_NAME)
             - ParameterKey: APIName
               ParameterValue: $(APIName)
             - ParameterKey: EnvironmentName
