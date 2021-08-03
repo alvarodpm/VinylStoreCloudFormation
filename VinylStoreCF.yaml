@@ -256,6 +256,54 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+  VinylStoreCloudFrontS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: vinylstore-cloudfront-s3bucket
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreCloudFrontOriginIdentity:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: 'origin identity'
+  VinylStoreCloudFrontS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: vinylstore-cloudfront-s3bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
+            Action: 's3:GetObject'
+            Resource: arn:aws:s3:::vinylstore-cloudfront-s3bucket/*
+  VinylStorePublicDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: vinylstore-cloudfront-s3bucket.s3.us-east-2.amazonaws.com
+            Id: S3-vinylstore-cloudfront-s3bucket
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${VinylStoreCloudFrontOriginIdentity}'
+        Enabled: true
+        Comment: Some comment
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - GET
+            - HEAD
+          TargetOriginId: S3-vinylstore-cloudfront-s3bucket
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          ViewerProtocolPolicy: redirect-to-https
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
 Parameters:
   UsernameTag:
     Type: String
