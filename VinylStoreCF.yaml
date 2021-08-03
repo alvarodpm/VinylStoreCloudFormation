@@ -5,8 +5,8 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        ZipFile: 
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","let body;","let statusCode = 200;","const headers = {","'Content-Type': 'application/json'","};","try {","body = await dynamo.get({","TableName: TABLE_NAME,","Key: {","id: event.queryStringParameters.id","}","}).promise();","} catch (err) {","statusCode = 400;","body = err.message;","} finally {","body = JSON.stringify(body);","}","return {","statusCode,","body,","headers","};","};"] ]
+        ZipFile:
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncGETName
       Handler: index.handler
@@ -25,8 +25,8 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        ZipFile: 
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');", "const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","  let body;","  let statusCode = 200;","  const headers = {","'Content-Type': 'application/json'","};","try {","body = await dynamo.scan({ TableName: TABLE_NAME }).promise();","} catch (err) {","statusCode = 400;","body = err.message;","} finally {","body = JSON.stringify(body);","}","return {","statusCode,","body,","headers","};","};"] ]
+        ZipFile:
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncGETALLName
       Handler: index.handler
@@ -46,7 +46,7 @@ Resources:
     Properties:
       Code:
         ZipFile:
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');", "const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","  let body;","  let statusCode = 200;","  const headers = {","    'Content-Type': 'application/json'","  };","  try {","    let requestJSON = JSON.parse(event.body);","    body = await dynamo.update({","        TableName: TABLE_NAME,","        Key:{","id: event.pathParameters.id","},","UpdateExpression: 'set name=:newName, artist=:newArtist, genre=:newGenre, year=:newYear',","ExpressionAttributeValues:{","':newName':requestJSON.name,","':newArtist':requestJSON.artist,","':newGenre':requestJSON.genre,","':newYear':requestJSON.year","':newYear':requestJSON.year","ReturnValues:'UPDATED_NEW'","}).promise();","body = `UPDATE Vinyl ${requestJSON.id}`;","} catch (err) {","statusCode = 400;","body = err.message;","} finally {","body = JSON.stringify(body);}","return {statusCode,body,headers};};"] ]
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncUPDATEName
       Handler: index.handler
@@ -85,8 +85,8 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: !Ref MicroservicesS3BucketName
-        S3Key: !Ref DELETEMicroserviceS3BucketKey
+        ZipFile:
+          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncDELETEName
       Handler: index.handler
@@ -300,16 +300,6 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-  VinylStoreMicroservicesS3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: 
-        !Ref MicroservicesS3BucketName
-      VersioningConfiguration:
-        Status: Enabled
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
 Parameters:
   UsernameTag:
     Type: String
@@ -330,8 +320,4 @@ Parameters:
   APIName:
     Type: String
   EnvironmentName:
-    Type: String
-  MicroservicesS3BucketName:
-    Type: String
-  DELETEMicroserviceS3BucketKey:
     Type: String
