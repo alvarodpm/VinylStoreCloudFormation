@@ -18,7 +18,6 @@ variables:
   LAMBDA_FUNC_UPDATE_NAME: $(LambdaFuncUPDATEName)
   LAMBDA_FUNC_DELETE_NAME: $(LambdaFuncDELETEName)
   LAMBDA_FUNC_GET_NAME: $(LambdaFuncGETName)
-  LAMBDA_FUNC_GETALL_NAME: $(LambdaFuncGETALLName)
   LAMBDA_FUNC_POST_NAME: $(LambdaFuncPOSTName)
   DYNAMO_DB_TABLE_NAME: $(DynamoDBTableName)
   API_NAME: $(APIName)
@@ -55,8 +54,6 @@ jobs:
               ParameterValue: $(LAMBDA_FUNC_DELETE_NAME)
             - ParameterKey: LambdaFuncGETName
               ParameterValue: $(LAMBDA_FUNC_GET_NAME)
-            - ParameterKey: LambdaFuncGETALLName
-              ParameterValue: $(LAMBDA_FUNC_GETALL_NAME)
             - ParameterKey: LambdaFuncPOSTName
               ParameterValue: $(LAMBDA_FUNC_POST_NAME)
             - ParameterKey: DynamoDBTableName
