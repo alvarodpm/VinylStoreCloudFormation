@@ -19,7 +19,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaGETALL:
     Type: AWS::Lambda::Function
@@ -39,7 +39,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaUPDATE:
     Type: AWS::Lambda::Function
@@ -59,7 +59,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaPOST:
     Type: AWS::Lambda::Function
@@ -79,7 +79,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaDELETE:
     Type: AWS::Lambda::Function
@@ -99,7 +99,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
@@ -115,7 +115,7 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -124,7 +124,7 @@ Resources:
         Ref: APIName
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
     DependsOn: 
       - VinylStoreLambdaGET
       - VinylStoreLambdaGETALL
@@ -299,7 +299,7 @@ Resources:
       RoleName: VinylStoreRoleLambdaGET
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
   VinylStoreMicroservicesS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -309,7 +309,7 @@ Resources:
         Status: Enabled
       Tags:
         - Key: user
-          Value: ${aws:username}
+          Value: $(Build.RequestedForEmail)
 Parameters:
   APIGatewayResourceVinylsPathPart:
     Type: String
