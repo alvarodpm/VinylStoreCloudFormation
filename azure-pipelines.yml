@@ -14,17 +14,17 @@ parameters:
     default: 5bd7e7ed-c091-4182-9caa-931ea7a13fe6
 variables:
   USERNAME_TAG: $(UsernameTag)
-  APIGatewayResourceVinylsPathPart: $(APIGatewayResourceVinylsPathPart)
-  LambdaFuncUPDATEName: $(LambdaFuncUPDATEName)
-  LambdaFuncDELETEName: $(LambdaFuncDELETEName)
-  LambdaFuncGETName: $(LambdaFuncGETName)
-  LambdaFuncGETALLName: $(LambdaFuncGETALLName)
-  LambdaFuncPOSTName: $(LambdaFuncPOSTName)
+  API_GATEWAY_RESOURCE_VINYLS_PATH_PART: $(APIGatewayResourceVinylsPathPart)
+  LAMBDA_FUNC_UPDATE_NAME: $(LambdaFuncUPDATEName)
+  LAMBDA_FUNC_DELETE_NAME: $(LambdaFuncDELETEName)
+  LAMBDA_FUNC_GET_NAME: $(LambdaFuncGETName)
+  LAMBDA_FUNC_GETALL_NAME: $(LambdaFuncGETALLName)
+  LAMBDA_FUNC_POST_NAME: $(LambdaFuncPOSTName)
   DYNAMO_DB_TABLE_NAME: $(DynamoDBTableName)
-  APIName: $(APIName)
-  EnvironmentName: $(EnvironmentName)
-  MicroservicesS3BucketName: $(MicroservicesS3BucketName)
-  DELETEMicroserviceS3BucketKey: $(DELETEMicroserviceS3BucketKey)
+  API_NAME: $(APIName)
+  ENVIRONMENT_NAME: $(EnvironmentName)
+  MICROSERVICES_S3_BUCKET_NAME: $(MicroservicesS3BucketName)
+  DELETE_MICROSERVICES_S3_BUCKER_KEY: $(DELETEMicroserviceS3BucketKey)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 2
@@ -50,27 +50,27 @@ jobs:
             - ParameterKey: UsernameTag
               ParameterValue: $(USERNAME_TAG)
             - ParameterKey: APIGatewayResourceVinylsPathPart
-              ParameterValue: $(APIGatewayResourceVinylsPathPart)
+              ParameterValue: $(API_GATEWAY_RESOURCE_VINYLS_PATH_PART)
             - ParameterKey: LambdaFuncUPDATEName
-              ParameterValue: $(LambdaFuncUPDATEName)
+              ParameterValue: $(LAMBDA_FUNC_UPDATE_NAME)
             - ParameterKey: LambdaFuncDELETEName
-              ParameterValue: $(LambdaFuncDELETEName)
+              ParameterValue: $(LAMBDA_FUNC_DELETE_NAME)
             - ParameterKey: LambdaFuncGETName
-              ParameterValue: $(LambdaFuncGETName)
+              ParameterValue: $(LAMBDA_FUNC_GET_NAME)
             - ParameterKey: LambdaFuncGETALLName
-              ParameterValue: $(LambdaFuncGETALLName)
+              ParameterValue: $(LAMBDA_FUNC_GETALL_NAME)
             - ParameterKey: LambdaFuncPOSTName
-              ParameterValue: $(LambdaFuncPOSTName)
+              ParameterValue: $(LAMBDA_FUNC_POST_NAME)
             - ParameterKey: DynamoDBTableName
               ParameterValue: $(DYNAMO_DB_TABLE_NAME)
             - ParameterKey: APIName
-              ParameterValue: $(APIName)
+              ParameterValue: $(API_NAME)
             - ParameterKey: EnvironmentName
-              ParameterValue: $(EnvironmentName)
+              ParameterValue: $(ENVIRONMENT_NAME)
             - ParameterKey: MicroservicesS3BucketName
-              ParameterValue: $(MicroservicesS3BucketName)
+              ParameterValue: $(MICROSERVICES_S3_BUCKET_NAME)
             - ParameterKey: DELETEMicroserviceS3BucketKey
-              ParameterValue: $(DELETEMicroserviceS3BucketKey)
+              ParameterValue: $(DELETE_MICROSERVICES_S3_BUCKER_KEY)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
