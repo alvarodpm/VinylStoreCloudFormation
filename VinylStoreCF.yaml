@@ -307,9 +307,6 @@ Resources:
         !Ref MicroservicesS3BucketName
       VersioningConfiguration:
         Status: Enabled
-      Tags:
-        - Key: user
-          Value: $(Build.RequestedForEmail)
 Parameters:
   APIGatewayResourceVinylsPathPart:
     Type: String
