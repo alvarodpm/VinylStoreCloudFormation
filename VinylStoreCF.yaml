@@ -260,10 +260,10 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
-      BucketName: VinylStoreCloudFrontS3Bucket
+      BucketName: vinylstore-cloudfront-s3bucket
       Tags:
         - Key: user
-          Value: !Ref CloudFrontS3BucketName
+          Value: !Ref UsernameTag
   VinylStoreCloudFrontOriginIdentity:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
@@ -272,7 +272,7 @@ Resources:
   VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: VinylStoreCloudFrontS3Bucket
+      Bucket: vinylstore-cloudfront-s3bucket
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -280,30 +280,30 @@ Resources:
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
             Action: 's3:GetObject'
-            Resource: arn:aws:s3:::VinylStoreCloudFrontS3Bucket/*
+            Resource: arn:aws:s3:::vinylstore-cloudfront-s3bucket/*
   VinylStorePublicDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: VinylStoreCloudFrontS3Bucket.s3.us-east-2.amazonaws.com
-            Id: S3-VinylStoreCloudFrontS3Bucket
+          - DomainName: vinylstore-cloudfront-s3bucket.s3.us-east-2.amazonaws.com
+            Id: S3-vinylstore-cloudfront-s3bucket
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${VinylStoreCloudFrontOriginIdentity}'
-        Enabled: 'true'
+        Enabled: true
         Comment: Some comment
         DefaultCacheBehavior:
           AllowedMethods:
             - GET
             - HEAD
-          TargetOriginId: S3-VinylStoreCloudFrontS3Bucket
+          TargetOriginId: S3-vinylstore-cloudfront-s3bucket
           ForwardedValues:
-            QueryString: 'false'
+            QueryString: false
             Cookies:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
         ViewerCertificate:
-          CloudFrontDefaultCertificate: 'true'
+          CloudFrontDefaultCertificate: true
 Parameters:
   UsernameTag:
     Type: String
