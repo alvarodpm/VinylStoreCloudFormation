@@ -24,7 +24,7 @@ variables:
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
   MICROSERVICES_S3_BUCKET_NAME: $(MicroservicesS3BucketName)
-  DELETE_MICROSERVICES_S3_BUCKER_KEY: $(DELETEMicroserviceS3BucketKey)
+  DELETE_MICROSERVICE_S3_BUCKET_KEY: $(DELETEMicroserviceS3BucketKey)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 2
@@ -70,7 +70,7 @@ jobs:
             - ParameterKey: MicroservicesS3BucketName
               ParameterValue: $(MICROSERVICES_S3_BUCKET_NAME)
             - ParameterKey: DELETEMicroserviceS3BucketKey
-              ParameterValue: $(DELETE_MICROSERVICES_S3_BUCKER_KEY)
+              ParameterValue: $(DELETE_MICROSERVICE_S3_BUCKET_KEY)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
