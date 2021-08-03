@@ -19,7 +19,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaGETALL:
     Type: AWS::Lambda::Function
@@ -39,7 +39,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaUPDATE:
     Type: AWS::Lambda::Function
@@ -59,7 +59,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaPOST:
     Type: AWS::Lambda::Function
@@ -79,7 +79,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreLambdaDELETE:
     Type: AWS::Lambda::Function
@@ -99,7 +99,7 @@ Resources:
             Ref: DynamoDBTableName
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
@@ -115,7 +115,7 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -124,7 +124,7 @@ Resources:
         Ref: APIName
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
     DependsOn: 
       - VinylStoreLambdaGET
       - VinylStoreLambdaGETALL
@@ -299,7 +299,7 @@ Resources:
       RoleName: VinylStoreRoleLambdaGET
       Tags:
         - Key: user
-          Value: $(Build.RequestedForEmail)
+          Value: !Ref UsernameTag
   VinylStoreMicroservicesS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -307,37 +307,31 @@ Resources:
         !Ref MicroservicesS3BucketName
       VersioningConfiguration:
         Status: Enabled
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
 Parameters:
+  UsernameTag:
+    Type: String
   APIGatewayResourceVinylsPathPart:
     Type: String
-    Default: vinyls
   LambdaFuncUPDATEName:
     Type: String
-    Default: VinylStoreLambdaUPDATE
   LambdaFuncDELETEName:
     Type: String
-    Default: VinylStoreLambdaDELETE
   LambdaFuncGETName:
     Type: String
-    Default: VinylStoreLambdaGET
   LambdaFuncGETALLName:
     Type: String
-    Default: VinylStoreLambdaGETALL
   LambdaFuncPOSTName:
     Type: String
-    Default: VinylStoreLambdaPOST
   DynamoDBTableName:
     Type: String
-    Default: VinylStoreDynamoDBTable
   APIName:
     Type: String
-    Default: VinylStoreAPI
   EnvironmentName:
     Type: String
-    Default: Prod
   MicroservicesS3BucketName:
     Type: String
-    Default: vinylstore-microservices-bucket
   DELETEMicroserviceS3BucketKey:
     Type: String
-    Default: DeleteScript.zip
