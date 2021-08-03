@@ -252,7 +252,7 @@ Resources:
                   - logs:PutLogEvents
                   - logs:DescribeLogStreams
                 Resource: arn:aws:logs:*:*:*
-      RoleName: VinylStoreRoleLambdaGET
+      RoleName: VinylStoreRoleLambdas
       Tags:
         - Key: user
           Value: !Ref UsernameTag
