@@ -12,6 +12,19 @@ parameters:
   - name: account
     type: string
     default: 5bd7e7ed-c091-4182-9caa-931ea7a13fe6
+variables:
+  UsernameTag: $(UsernameTag)
+  APIGatewayResourceVinylsPathPart: $(APIGatewayResourceVinylsPathPart)
+  LambdaFuncUPDATEName: $(LambdaFuncUPDATEName)
+  LambdaFuncDELETEName: $(LambdaFuncDELETEName)
+  LambdaFuncGETName: $(LambdaFuncGETName)
+  LambdaFuncGETALLName: $(LambdaFuncGETALLName)
+  LambdaFuncPOSTName: $(LambdaFuncPOSTName)
+  DynamoDBTableName: $(DynamoDBTableName)
+  APIName: $(APIName)
+  EnvironmentName: $(EnvironmentName)
+  MicroservicesS3BucketName: $(MicroservicesS3BucketName)
+  DELETEMicroserviceS3BucketKey: $(DELETEMicroserviceS3BucketKey)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 2
@@ -35,29 +48,29 @@ jobs:
           templateParametersSource: "inline"
           templateParameters: |
             - ParameterKey: UsernameTag
-              ParameterValue: $env:UsernameTag
+              ParameterValue: $(UsernameTag)
             - ParameterKey: APIGatewayResourceVinylsPathPart
-              ParameterValue: $env:APIGatewayResourceVinylsPathPart
+              ParameterValue: $(APIGatewayResourceVinylsPathPart)
             - ParameterKey: LambdaFuncUPDATEName
-              ParameterValue: $env:LambdaFuncUPDATEName
+              ParameterValue: $(LambdaFuncUPDATEName)
             - ParameterKey: LambdaFuncDELETEName
-              ParameterValue: $env:LambdaFuncDELETEName
+              ParameterValue: $(LambdaFuncDELETEName)
             - ParameterKey: LambdaFuncGETName
-              ParameterValue: $env:LambdaFuncGETName
+              ParameterValue: $(LambdaFuncGETName)
             - ParameterKey: LambdaFuncGETALLName
-              ParameterValue: $env:LambdaFuncGETALLName
+              ParameterValue: $(LambdaFuncGETALLName)
             - ParameterKey: LambdaFuncPOSTName
-              ParameterValue: $env:LambdaFuncPOSTName
+              ParameterValue: $(LambdaFuncPOSTName)
             - ParameterKey: DynamoDBTableName
-              ParameterValue: $env:DynamoDBTableName
+              ParameterValue: $(DynamoDBTableName)
             - ParameterKey: APIName
-              ParameterValue: $env:APIName
+              ParameterValue: $(APIName)
             - ParameterKey: EnvironmentName
-              ParameterValue: $env:EnvironmentName
+              ParameterValue: $(EnvironmentName)
             - ParameterKey: MicroservicesS3BucketName
-              ParameterValue: $env:MicroservicesS3BucketName
+              ParameterValue: $(MicroservicesS3BucketName)
             - ParameterKey: DELETEMicroserviceS3BucketKey
-              ParameterValue: $env:DELETEMicroserviceS3BucketKey
+              ParameterValue: $(DELETEMicroserviceS3BucketKey)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
