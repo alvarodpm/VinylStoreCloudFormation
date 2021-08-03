@@ -24,7 +24,7 @@ variables:
   ENVIRONMENT_NAME: $(EnvironmentName)
 jobs:
 - job: 'Job_1'
-  displayName: Agent job 2
+  displayName: Agent job 1
   pool:
       vmImage: vs2017-win2016
   variables:
