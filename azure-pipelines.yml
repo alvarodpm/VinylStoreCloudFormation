@@ -32,6 +32,32 @@ jobs:
           templateSource: 'file'
           templateFile: '$(cfn-template)' 
           roleARN: arn:aws:iam::933005959117:role/CloudFormationADRole
+          templateParametersSource: "inline"
+          templateParameters: |
+            - ParameterKey: UsernameTag
+              ParameterValue: $(Build.RequestedForEmail)
+            - ParameterKey: APIGatewayResourceVinylsPathPart
+              ParameterValue: $env:APIGatewayResourceVinylsPathPart
+            - ParameterKey: LambdaFuncUPDATEName
+              ParameterValue: $env:LambdaFuncUPDATEName
+            - ParameterKey: LambdaFuncDELETEName
+              ParameterValue: $env:LambdaFuncDELETEName
+            - ParameterKey: LambdaFuncGETName
+              ParameterValue: $env:LambdaFuncGETName
+            - ParameterKey: LambdaFuncGETALLName
+              ParameterValue: $env:LambdaFuncGETALLName
+            - ParameterKey: LambdaFuncPOSTName
+              ParameterValue: $env:LambdaFuncPOSTName
+            - ParameterKey: DynamoDBTableName
+              ParameterValue: $env:DynamoDBTableName
+            - ParameterKey: APIName
+              ParameterValue: $env:APIName
+            - ParameterKey: EnvironmentName
+              ParameterValue: $env:EnvironmentName
+            - ParameterKey: MicroservicesS3BucketName
+              ParameterValue: $env:MicroservicesS3BucketName
+            - ParameterKey: DELETEMicroserviceS3BucketKey
+              ParameterValue: $env:DELETEMicroserviceS3BucketKey
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
