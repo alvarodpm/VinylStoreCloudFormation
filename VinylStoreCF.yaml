@@ -268,7 +268,7 @@ Resources:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: 'Origin access identity configuration to access the S3 Bucket that contains the static files for the Vinyl Store Frontend Application'
+        Comment: 'origin identity'
   VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
