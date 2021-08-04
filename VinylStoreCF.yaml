@@ -260,7 +260,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
-      BucketName: vinylstore-cloudfront-s3bucket
+      BucketName: !Ref VinylStoreCloudFrontS3BucketName
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -268,35 +268,37 @@ Resources:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: 'origin identity'
+        Comment: Origin access identity configuration to access the S3 Bucket that contains the static files for the Vinyl Store Frontend Application
   VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: vinylstore-cloudfront-s3bucket
+      Bucket: !Ref VinylStoreCloudFrontS3BucketName
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
-            Action: 's3:GetObject'
-            Resource: arn:aws:s3:::vinylstore-cloudfront-s3bucket/*
+            Action: 
+              - s3:GetObject
+              - s3:PutObject
+            Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*
   VinylStorePublicDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: vinylstore-cloudfront-s3bucket.s3.us-east-2.amazonaws.com
-            Id: S3-vinylstore-cloudfront-s3bucket
+          - DomainName: !Sub ${VinylStoreCloudFrontS3BucketName}.s3.us-east-2.amazonaws.com
+            Id: !Sub S3-${VinylStoreCloudFrontS3BucketName}
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${VinylStoreCloudFrontOriginIdentity}'
         Enabled: true
-        Comment: Some comment
+        Comment: CloudFront distribution dedicated to deploy the Frontend files for the Vinyl Store application
         DefaultCacheBehavior:
           AllowedMethods:
             - GET
             - HEAD
-          TargetOriginId: S3-vinylstore-cloudfront-s3bucket
+          TargetOriginId: !Sub S3-${VinylStoreCloudFrontS3BucketName}
           ForwardedValues:
             QueryString: false
             Cookies:
@@ -304,6 +306,10 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
+        DefaultRootObject: home
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
 Parameters:
   UsernameTag:
     Type: String
@@ -322,4 +328,6 @@ Parameters:
   APIName:
     Type: String
   EnvironmentName:
+    Type: String
+  VinylStoreCloudFrontS3BucketName:
     Type: String
