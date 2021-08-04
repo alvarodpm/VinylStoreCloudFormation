@@ -279,9 +279,7 @@ Resources:
           - Effect: Allow
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
-            Action: 
-              - s3:GetObject
-              - s3:PutObject
+            Action: s3:GetObject
             Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*
   VinylStorePublicDistribution:
     Type: AWS::CloudFront::Distribution
