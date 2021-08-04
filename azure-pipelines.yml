@@ -22,6 +22,7 @@ variables:
   DYNAMO_DB_TABLE_NAME: $(DynamoDBTableName)
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
+  VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME: $(VinylStoreCloudFrontS3BucketName)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -62,6 +63,8 @@ jobs:
               ParameterValue: $(API_NAME)
             - ParameterKey: EnvironmentName
               ParameterValue: $(ENVIRONMENT_NAME)
+            - ParameterKey: VinylStoreCloudFrontS3BucketName
+              ParameterValue: $(VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
