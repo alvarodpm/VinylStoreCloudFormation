@@ -23,6 +23,10 @@ variables:
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
   VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME: $(VinylStoreCloudFrontS3BucketName)
+  VINYL_STORE_LAMBDA_GET_SCRIPT_NAME: $(VinylStoreLambdaGETScriptName)
+  VINYL_STORE_LAMBDA_POST_SCRIPT_NAME: $(VinylStoreLambdaPOSTScriptName)
+  VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME: $(VinylStoreLambdaDELETEScriptName)
+  VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME: $(VinylStoreLambdaUPDATEScriptName)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -65,6 +69,14 @@ jobs:
               ParameterValue: $(ENVIRONMENT_NAME)
             - ParameterKey: VinylStoreCloudFrontS3BucketName
               ParameterValue: $(VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME)
+            - ParameterKey: VinylStoreLambdaGETScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_GET_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaPOSTScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_POST_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaDELETEScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaUPDATEScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
