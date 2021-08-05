@@ -9,7 +9,7 @@ Resources:
           Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncGETName
-      Handler: get_vinyl_service.handler
+      Handler: !Sub ${VinylStoreLambdaGETScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
@@ -29,7 +29,7 @@ Resources:
           Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncUPDATEName
-      Handler: index.handler
+      Handler: !Sub ${VinylStoreLambdaUPDATEScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the UPDATE requests of the Vinyl Store application
@@ -49,7 +49,7 @@ Resources:
           Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncPOSTName
-      Handler: index.handler
+      Handler: !Sub ${VinylStoreLambdaPOSTScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the POST requests of the Vinyl Store application
@@ -69,7 +69,7 @@ Resources:
           Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncDELETEName
-      Handler: index.handler
+      Handler: !Sub ${VinylStoreLambdaDELETEScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
@@ -330,4 +330,12 @@ Parameters:
   EnvironmentName:
     Type: String
   VinylStoreCloudFrontS3BucketName:
+    Type: String
+  VinylStoreLambdaGETScriptName:
+    Type: String
+  VinylStoreLambdaPOSTScriptName:
+    Type: String
+  VinylStoreLambdaDELETEScriptName:
+    Type: String
+  VinylStoreLambdaUPDATEScriptName:
     Type: String
