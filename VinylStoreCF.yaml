@@ -9,7 +9,7 @@ Resources:
           Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
       FunctionName: 
         !Ref LambdaFuncGETName
-      Handler: index.handler
+      Handler: get_vinyl_service.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
