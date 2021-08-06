@@ -259,7 +259,7 @@ Resources:
   VinylStoreCloudFrontS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      AccessControl: Private
+      AccessControl: BucketOwnerFullControl
       BucketName: !Ref VinylStoreCloudFrontS3BucketName
       Tags:
         - Key: user
@@ -272,16 +272,16 @@ Resources:
   VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
-      Bucket: !Ref VinylStoreCloudFrontS3BucketName
+      Bucket: !Ref VinylStoreCloudFrontS3Bucket
       PolicyDocument:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
-            Principal:
-              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
+            Principal: 
+              CanonicalUser: !GetAtt VinylStoreCloudFrontOriginIdentity.S3CanonicalUserId
             Action: 
-              - s3:GetObject
-              - s3:PutObject
+              - s3:Get*
+              - s3:Put*
             Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*
   VinylStorePublicDistribution:
     Type: AWS::CloudFront::Distribution
@@ -298,9 +298,10 @@ Resources:
           AllowedMethods:
             - GET
             - HEAD
+            - OPTIONS
           TargetOriginId: !Sub S3-${VinylStoreCloudFrontS3BucketName}
           ForwardedValues:
-            QueryString: false
+            QueryString: true
             Cookies:
               Forward: none
           ViewerProtocolPolicy: redirect-to-https
