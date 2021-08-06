@@ -288,7 +288,7 @@ Resources:
     Properties:
       DistributionConfig:
         Origins:
-          - DomainName: !Sub ${VinylStoreCloudFrontS3BucketName}.s3.us-east-2.amazonaws.com
+          - DomainName: !Sub ${VinylStoreCloudFrontS3BucketName}.s3.amazonaws.com
             Id: !Sub S3-${VinylStoreCloudFrontS3BucketName}
             S3OriginConfig:
               OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${VinylStoreCloudFrontOriginIdentity}'
@@ -306,7 +306,7 @@ Resources:
           ViewerProtocolPolicy: redirect-to-https
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
-        DefaultRootObject: home
+        DefaultRootObject: dist/vinyl-store/index.html
       Tags:
         - Key: user
           Value: !Ref UsernameTag
