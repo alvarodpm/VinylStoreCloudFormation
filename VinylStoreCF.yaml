@@ -274,7 +274,7 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: 'Origin Access Identity to get the objects from the Vinyl Store CloudFront Bucket'
-  VinylStoreCloudFrontS3BucketPolicy:
+  VinylStoreCloudFrontS3BucketPolicy1:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref VinylStoreCloudFrontS3BucketName
