@@ -274,7 +274,7 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: 'Origin Access Identity to get the objects from the Vinyl Store CloudFront Bucket'
-  VinylStoreCloudFrontS3BucketPolicy2:
+  VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref VinylStoreCloudFrontS3BucketName
@@ -323,12 +323,9 @@ Resources:
             - GET
             - HEAD
             - OPTIONS
+          Compress: true
           CachePolicyId: !Ref VinylStoreCloudFrontCachePolicy
           TargetOriginId: !Sub S3-${VinylStoreCloudFrontS3BucketName}
-          ForwardedValues:
-            QueryString: false
-            Cookies:
-              Forward: none
           ViewerProtocolPolicy: redirect-to-https
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
