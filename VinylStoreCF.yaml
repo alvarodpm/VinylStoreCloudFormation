@@ -261,6 +261,11 @@ Resources:
     Properties:
       AccessControl: Private
       BucketName: !Ref VinylStoreCloudFrontS3BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -277,7 +282,7 @@ Resources:
         Version: '2012-10-17'
         Statement:
           - Effect: Allow
-            Sid: AccessObjectsOnlyThroughASpecificCloudFrontDistribution,
+            Sid: AccessObjectsOnlyThroughASpecificCloudFrontDistribution
             Principal:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
             Action: s3:GetObject
@@ -286,6 +291,9 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
+        HttpVersion: http2
+        IPV6Enabled: true
+        PriceClass: PriceClass_100
         Origins:
           - DomainName: !Sub ${VinylStoreCloudFrontS3BucketName}.s3.us-east-1.amazonaws.com
             Id: !Sub S3-${VinylStoreCloudFrontS3BucketName}
@@ -297,6 +305,7 @@ Resources:
           AllowedMethods:
             - GET
             - HEAD
+            - OPTIONS
           TargetOriginId: !Sub S3-${VinylStoreCloudFrontS3BucketName}
           ForwardedValues:
             QueryString: false
