@@ -274,7 +274,7 @@ Resources:
     Properties:
       CloudFrontOriginAccessIdentityConfig:
         Comment: 'Origin Access Identity to get the objects from the Vinyl Store CloudFront Bucket'
-  VinylStoreCloudFrontS3BucketPolicy1:
+  VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref VinylStoreCloudFrontS3BucketName
@@ -287,6 +287,23 @@ Resources:
               AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
             Action: s3:GetObject
             Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*
+  VinylStoreCloudFrontCachePolicy:
+    Type: AWS::CloudFront::CachePolicy
+    Properties:
+      CachePolicyConfig:
+        DefaultTTL: 86400
+        MaxTTL: 31535999
+        MinTTL: 72000
+        Name: RPCacheBasic 
+        ParametersInCacheKeyAndForwardedToOrigin:
+          EnableAcceptEncodingGzip: true
+          CookiesConfig:
+            CookieBehavior: all
+          EnableAcceptEncodingBrotli: true
+          HeadersConfig:
+            HeaderBehavior: none
+          QueryStringsConfig:
+            QueryStringBehavior: all
   VinylStorePublicDistribution:
     Type: AWS::CloudFront::Distribution
     Properties:
