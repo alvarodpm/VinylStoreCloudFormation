@@ -333,6 +333,53 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+  VinylStoreCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UsernameConfiguration: 
+        CaseSensitive: false
+      AutoVerifiedAttributes:
+        - email
+      UserPoolName: !Sub ${VinylStoreCognitoDomain}-user-pool
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: false
+          Required: true
+        - Name: name
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+  VinylStoreCognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      CallbackURLs:
+        - http://localhost:4200/home
+      UserPoolId: !Ref VinylStoreCognitoUserPool
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+      SupportedIdentityProviders:
+        - COGNITO
+  VinylStoreCognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Ref VinylStoreCognitoDomain
+      UserPoolId: !Ref VinylStoreCognitoUserPool
+  VinylStoreCognitoIdentityPool:
+    Type: "AWS::Cognito::IdentityPool"
+    Properties:
+      IdentityPoolName: !Sub ${VinylStoreCognitoDomain}IdentityPool
+      AllowUnauthenticatedIdentities: false
+      CognitoIdentityProviders: 
+        - ClientId: !Ref VinylStoreCognitoUserPoolClient
+          ProviderName: !GetAtt VinylStoreCognitoUserPool.ProviderName
 Parameters:
   UsernameTag:
     Type: String
@@ -362,3 +409,21 @@ Parameters:
     Type: String
   VinylStoreLambdaUPDATEScriptName:
     Type: String
+  VinylStoreCognitoDomain:
+    Type: String
+    MinLength: 3
+    MaxLength: 63
+    AllowedPattern: ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$
+Outputs:
+  VinylStoreCognitoUserPoolID:
+    Value: !Ref VinylStoreCognitoUserPool
+    Description: Vinyl Store Cognito UserPool ID
+  VinylStoreCognitoPoolClientID:
+    Value: !Ref VinylStoreCognitoUserPoolClient
+    Description: Vinyl Store Cognito UserPoolClient ID
+  VinylStoreCognitoIdentityPoolId:
+    Value: !Ref VinylStoreCognitoIdentityPool
+    Description: Vinyl Store Cognito IdentityPool ID
+  HostedUIURL:
+    Value: !Sub https://${VinylStoreCognitoDomain}.auth.us-west-2.amazoncognito.com/login?client_id=${VinylStoreCognitoUserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:3000/home
+    Description: Vinyl Store Cognito hosted UI URL
