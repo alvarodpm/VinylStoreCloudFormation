@@ -27,6 +27,7 @@ variables:
   VINYL_STORE_LAMBDA_POST_SCRIPT_NAME: $(VinylStoreLambdaPOSTScriptName)
   VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME: $(VinylStoreLambdaDELETEScriptName)
   VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME: $(VinylStoreLambdaUPDATEScriptName)
+  VINYL_STORE_COGNITO_DOMAIN: $(VinylStoreCognitoDomain)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -77,6 +78,8 @@ jobs:
               ParameterValue: $(VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME)
             - ParameterKey: VinylStoreLambdaUPDATEScriptName
               ParameterValue: $(VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME)
+            - ParameterKey: VinylStoreCognitoDomain
+              ParameterValue: $(VINYL_STORE_COGNITO_DOMAIN)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
