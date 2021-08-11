@@ -311,7 +311,7 @@ Resources:
         CustomErrorResponses:
           - ErrorCode: 403
             ResponseCode: 200
-            ResponsePagePath: /dist/vinyl-store/index.html
+            ResponsePagePath: dist/vinyl-store/index.html
             ErrorCachingMinTTL: 300
         HttpVersion: http2
         IPV6Enabled: true
