@@ -308,6 +308,11 @@ Resources:
     Type: AWS::CloudFront::Distribution
     Properties:
       DistributionConfig:
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /dist/proyecto-inicial-frontend-productos/index.html
+            ErrorCachingMinTTL: 300
         HttpVersion: http2
         IPV6Enabled: true
         PriceClass: PriceClass_100
