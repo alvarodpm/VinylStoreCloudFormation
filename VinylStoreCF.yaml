@@ -488,14 +488,12 @@ Resources:
     Properties:
       Description: Cognito User Pool Group which contains the users of the Vinyl Store application with admin privileges
       GroupName: VinylStoreCognitoUserPoolGroupAdmins
-      RoleArn: !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
       UserPoolId: !Ref VinylStoreCognitoUserPool
   VinylStoreCognitoUserPoolGroupClients:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       Description: Cognito User Pool Group which contains the users of the Vinyl Store application with client privileges
       GroupName: VinylStoreCognitoUserPoolGroupClients
-      RoleArn: !GetAtt VinylStoreCognitoIAMRoleClients.Arn
       UserPoolId: !Ref VinylStoreCognitoUserPool
 Parameters:
   UsernameTag:
