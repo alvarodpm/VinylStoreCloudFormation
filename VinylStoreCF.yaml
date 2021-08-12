@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Description: Vinyl Store Application Stack deployed with Azure Devops Pipelines
 Resources:
   VinylStoreLambdaGET:
@@ -6,9 +6,18 @@ Resources:
     Properties:
       Code:
         ZipFile:
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
-      FunctionName: 
-        !Ref LambdaFuncGETName
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "const dynamo = new AWS.DynamoDB.DocumentClient();",
+                "const TABLE_NAME = process.env.VINYLS_TABLE;",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      FunctionName: !Ref LambdaFuncGETName
       Handler: !Sub ${VinylStoreLambdaGETScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
@@ -26,9 +35,18 @@ Resources:
     Properties:
       Code:
         ZipFile:
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
-      FunctionName: 
-        !Ref LambdaFuncUPDATEName
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "const dynamo = new AWS.DynamoDB.DocumentClient();",
+                "const TABLE_NAME = process.env.VINYLS_TABLE;",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      FunctionName: !Ref LambdaFuncUPDATEName
       Handler: !Sub ${VinylStoreLambdaUPDATEScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
@@ -46,9 +64,18 @@ Resources:
     Properties:
       Code:
         ZipFile:
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
-      FunctionName: 
-        !Ref LambdaFuncPOSTName
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "const dynamo = new AWS.DynamoDB.DocumentClient();",
+                "const TABLE_NAME = process.env.VINYLS_TABLE;",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      FunctionName: !Ref LambdaFuncPOSTName
       Handler: !Sub ${VinylStoreLambdaPOSTScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
@@ -66,9 +93,18 @@ Resources:
     Properties:
       Code:
         ZipFile:
-          Fn::Join: [ "", ["const AWS = require('aws-sdk');","const dynamo = new AWS.DynamoDB.DocumentClient();","const TABLE_NAME = process.env.VINYLS_TABLE;","exports.handler = async (event, context) => {","};"] ]
-      FunctionName: 
-        !Ref LambdaFuncDELETEName
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "const dynamo = new AWS.DynamoDB.DocumentClient();",
+                "const TABLE_NAME = process.env.VINYLS_TABLE;",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      FunctionName: !Ref LambdaFuncDELETEName
       Handler: !Sub ${VinylStoreLambdaDELETEScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
@@ -84,7 +120,7 @@ Resources:
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: 
+      TableName:
         Ref: DynamoDBTableName
       AttributeDefinitions:
         - AttributeName: id
@@ -100,12 +136,12 @@ Resources:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Description: REST API to handle the Vinyl Store Application requests
-      Name: 
+      Name:
         Ref: APIName
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-    DependsOn: 
+    DependsOn:
       - VinylStoreLambdaGET
       - VinylStoreLambdaUPDATE
       - VinylStoreLambdaPOST
@@ -113,76 +149,76 @@ Resources:
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
-      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
-      ParentId: !GetAtt 'VinylStoreAPIGatewayRESTAPI.RootResourceId'
-      PathPart: !Ref 'APIGatewayResourceVinylsPathPart'
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ParentId: !GetAtt "VinylStoreAPIGatewayRESTAPI.RootResourceId"
+      PathPart: !Ref "APIGatewayResourceVinylsPathPart"
   VinylStoreAPIGatewayMethodGET:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
-      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: GET
       AuthorizationType: NONE
       MethodResponses:
-        - StatusCode: '200'
+        - StatusCode: "200"
       Integration:
         Type: AWS_PROXY
         IntegrationResponses:
-          - StatusCode: '200'
+          - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGET.Arn}/invocations'
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGET.Arn}/invocations"
   VinylStoreAPIGatewayMethodUPDATE:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
-      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: PUT
       AuthorizationType: NONE
       MethodResponses:
-        - StatusCode: '200'
+        - StatusCode: "200"
       Integration:
         Type: AWS_PROXY
         IntegrationResponses:
-          - StatusCode: '200'
+          - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATE.Arn}/invocations'
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATE.Arn}/invocations"
   VinylStoreAPIGatewayMethodPOST:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
-      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: POST
       AuthorizationType: NONE
       MethodResponses:
-        - StatusCode: '200'
+        - StatusCode: "200"
       Integration:
         Type: AWS_PROXY
         IntegrationResponses:
-          - StatusCode: '200'
+          - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOST.Arn}/invocations'
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOST.Arn}/invocations"
   VinylStoreAPIGatewayMethodDELETE:
     Type: AWS::ApiGateway::Method
     Properties:
-      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
-      ResourceId: !Ref 'VinylStoreAPIGatewayResourceVinyls'
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: DELETE
       AuthorizationType: NONE
       MethodResponses:
-        - StatusCode: '200'
+        - StatusCode: "200"
       Integration:
         Type: AWS_PROXY
         IntegrationResponses:
-          - StatusCode: '200'
+          - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub 'arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETE.Arn}/invocations'
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETE.Arn}/invocations"
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
       Description: Deployment for the Frontend to connect to the API Gateway
-      RestApiId: !Ref 'VinylStoreAPIGatewayRESTAPI'
-      StageName: !Ref 'EnvironmentName'
-    DependsOn: 
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      StageName: !Ref "EnvironmentName"
+    DependsOn:
       - VinylStoreAPIGatewayMethodGET
       - VinylStoreAPIGatewayMethodUPDATE
       - VinylStoreAPIGatewayMethodPOST
@@ -191,28 +227,28 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt 'VinylStoreLambdaGET.Arn'
+      FunctionName: !GetAtt "VinylStoreLambdaGET.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreLambdaUPDATEPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt 'VinylStoreLambdaUPDATE.Arn'
+      FunctionName: !GetAtt "VinylStoreLambdaUPDATE.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreLambdaPOSTPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt 'VinylStoreLambdaPOST.Arn'
+      FunctionName: !GetAtt "VinylStoreLambdaPOST.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreLambdaDELETEPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !GetAtt 'VinylStoreLambdaDELETE.Arn'
+      FunctionName: !GetAtt "VinylStoreLambdaDELETE.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreRoleLambdas:
@@ -273,18 +309,18 @@ Resources:
     Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
     Properties:
       CloudFrontOriginAccessIdentityConfig:
-        Comment: 'Origin Access Identity to get the objects from the Vinyl Store CloudFront Bucket'
+        Comment: "Origin Access Identity to get the objects from the Vinyl Store CloudFront Bucket"
   VinylStoreCloudFrontS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
       Bucket: !Ref VinylStoreCloudFrontS3BucketName
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Sid: AccessObjectsOnlyThroughASpecificCloudFrontDistribution
             Principal:
-              AWS: !Sub 'arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}'
+              AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}"
             Action: s3:GetObject
             Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*
   VinylStoreCloudFrontCachePolicy:
@@ -294,7 +330,7 @@ Resources:
         DefaultTTL: 86400
         MaxTTL: 31535999
         MinTTL: 72000
-        Name: VinylStoreCacheBasic 
+        Name: VinylStoreCacheBasic
         ParametersInCacheKeyAndForwardedToOrigin:
           EnableAcceptEncodingGzip: true
           CookiesConfig:
@@ -320,7 +356,7 @@ Resources:
           - DomainName: !Sub ${VinylStoreCloudFrontS3BucketName}.s3.us-east-1.amazonaws.com
             Id: !Sub S3-${VinylStoreCloudFrontS3BucketName}
             S3OriginConfig:
-              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${VinylStoreCloudFrontOriginIdentity}'
+              OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${VinylStoreCloudFrontOriginIdentity}"
         Enabled: true
         Comment: CloudFront distribution dedicated to deploy the Frontend files for the Vinyl Store application
         DefaultCacheBehavior:
@@ -341,7 +377,7 @@ Resources:
   VinylStoreCognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
-      UsernameConfiguration: 
+      UsernameConfiguration:
         CaseSensitive: false
       AutoVerifiedAttributes:
         - email
@@ -377,14 +413,77 @@ Resources:
     Properties:
       Domain: !Ref VinylStoreCognitoDomain
       UserPoolId: !Ref VinylStoreCognitoUserPool
-  VinylStoreCognitoIdentityPool:
-    Type: "AWS::Cognito::IdentityPool"
+  VinylStoreCognitoIAMRoleAdmins:
+    Type: AWS::IAM::Role
     Properties:
-      IdentityPoolName: !Sub ${VinylStoreCognitoDomain}IdentityPool
-      AllowUnauthenticatedIdentities: false
-      CognitoIdentityProviders: 
-        - ClientId: !Ref VinylStoreCognitoUserPoolClient
-          ProviderName: !GetAtt VinylStoreCognitoUserPool.ProviderName
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      Policies:
+        - PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - apigateway:PATCH
+                    apigateway:POST
+                    apigateway:PUT
+                    apigateway:GET
+                    apigateway:DELETE
+                Resource: !Sub arn:aws:apigateway:us-east-1::/restapis/${VinylStoreAPIGatewayRESTAPI}/resources/${VinylStoreAPIGatewayResourceVinyls}/*
+      Description: IAM Role Policy to give the Vinyl Store application admin users permissions to access all the API GATEWAY Methods of the Vinyls Resource
+      RoleName: VinylStoreCognitoIAMRoleAdmins
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreCognitoIAMRoleClients:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - apigateway.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      Policies:
+        - PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: apigateway:GET
+                Resource: !Sub arn:aws:apigateway:us-east-1::/restapis/${VinylStoreAPIGatewayRESTAPI}/resources/${VinylStoreAPIGatewayResourceVinyls}/*
+      Description: IAM Role Policy to give the Vinyl Store application client users permissions to access  the API Gateway GET Method of the Vinyls Resource
+      RoleName: VinylStoreCognitoIAMRoleClients
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreCognitoUserPoolGroupAdmins:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: Cognito User Pool Group which contains the users of the Vinyl Store application with admin privileges
+      GroupName: VinylStoreCognitoUserPoolGroupAdmins
+      RoleArn: !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
+      UserPoolId: !Ref VinylStoreCognitoUserPool
+  VinylStoreCognitoUserPoolGroupClients:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      Description: Cognito User Pool Group which contains the users of the Vinyl Store application with client privileges
+      GroupName: VinylStoreCognitoUserPoolGroupClients
+      RoleArn: VinylStoreCognitoIAMRoleClients.Arn
+      UserPoolId: !Ref VinylStoreCognitoUserPool
 Parameters:
   UsernameTag:
     Type: String
@@ -426,9 +525,6 @@ Outputs:
   VinylStoreCognitoPoolClientID:
     Value: !Ref VinylStoreCognitoUserPoolClient
     Description: Vinyl Store Cognito UserPoolClient ID
-  VinylStoreCognitoIdentityPoolId:
-    Value: !Ref VinylStoreCognitoIdentityPool
-    Description: Vinyl Store Cognito IdentityPool ID
   HostedUIURL:
     Value: !Sub https://${VinylStoreCognitoDomain}.auth.us-east-1.amazoncognito.com/login?client_id=${VinylStoreCognitoUserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:4200/home
     Description: Vinyl Store Cognito hosted UI URL
