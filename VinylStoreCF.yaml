@@ -155,10 +155,11 @@ Resources:
   VinylStoreAPIGatewayMethodGET:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: GET
-      AuthorizationType: NONE
       MethodResponses:
         - StatusCode: "200"
       Integration:
@@ -170,10 +171,11 @@ Resources:
   VinylStoreAPIGatewayMethodUPDATE:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: PUT
-      AuthorizationType: NONE
       MethodResponses:
         - StatusCode: "200"
       Integration:
@@ -185,10 +187,11 @@ Resources:
   VinylStoreAPIGatewayMethodPOST:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: POST
-      AuthorizationType: NONE
       MethodResponses:
         - StatusCode: "200"
       Integration:
@@ -200,10 +203,11 @@ Resources:
   VinylStoreAPIGatewayMethodDELETE:
     Type: AWS::ApiGateway::Method
     Properties:
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: DELETE
-      AuthorizationType: NONE
       MethodResponses:
         - StatusCode: "200"
       Integration:
@@ -223,6 +227,15 @@ Resources:
       - VinylStoreAPIGatewayMethodUPDATE
       - VinylStoreAPIGatewayMethodPOST
       - VinylStoreAPIGatewayMethodDELETE
+  VinylStoreAPIGatewayAuthorizer:
+    Type: "AWS::ApiGateway::Authorizer"
+    Properties:
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Auth
+      Name: VinylStoreAPIGatewayAuthorizer
+      ProviderARNs:
+        - !GetAtt VinylStoreCognitoUserPool.Arn
+      RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
   VinylStoreLambdaGETPermission:
     Type: AWS::Lambda::Permission
     Properties:
