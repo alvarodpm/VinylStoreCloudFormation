@@ -434,10 +434,10 @@ Resources:
               - Effect: Allow
                 Action:
                   - apigateway:PATCH
-                    apigateway:POST
-                    apigateway:PUT
-                    apigateway:GET
-                    apigateway:DELETE
+                  - apigateway:POST
+                  - apigateway:PUT
+                  - apigateway:GET
+                  - apigateway:DELETE
                 Resource: !Sub arn:aws:apigateway:us-east-1::/restapis/${VinylStoreAPIGatewayRESTAPI}/resources/${VinylStoreAPIGatewayResourceVinyls}/*
       Description: IAM Role Policy to give the Vinyl Store application admin users permissions to access all the API GATEWAY Methods of the Vinyls Resource
       RoleName: VinylStoreCognitoIAMRoleAdmins
