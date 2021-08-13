@@ -231,7 +231,7 @@ Resources:
     Type: "AWS::ApiGateway::Authorizer"
     Properties:
       Type: COGNITO_USER_POOLS
-      IdentitySource: method.request.header.Auth
+      IdentitySource: method.request.header.Authorization
       Name: VinylStoreAPIGatewayAuthorizer
       ProviderARNs:
         - !GetAtt VinylStoreCognitoUserPool.Arn
