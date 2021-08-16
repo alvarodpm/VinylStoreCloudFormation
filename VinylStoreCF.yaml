@@ -641,3 +641,6 @@ Outputs:
   HostedUIURL:
     Value: !Sub https://${VinylStoreCognitoDomain}.auth.us-east-1.amazoncognito.com/login?client_id=${VinylStoreCognitoUserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:4200/home
     Description: Vinyl Store Cognito hosted UI URL
+  VinylStoreIdentityPoolID:
+    Value: !Ref VinylStoreCognitoIdentityPool
+    Description: Vinyl Store Cognito Identity Pool ID
