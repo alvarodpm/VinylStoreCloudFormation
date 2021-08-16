@@ -28,6 +28,9 @@ variables:
   VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME: $(VinylStoreLambdaDELETEScriptName)
   VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME: $(VinylStoreLambdaUPDATEScriptName)
   VINYL_STORE_COGNITO_DOMAIN: $(VinylStoreCognitoDomain)
+  DEPLOYMENT_ROLE_ACCESS_KEY_ID: $(DeploymentRoleAccessKeyId)
+  DEPLOYMENT_ROLE_SECRET_ACCESS_KEY_ID: $(DeploymentRoleSecretAccessKeyId)
+  MY_AWS_ROLE_ARN: $(MyAWSRoleARN)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -80,6 +83,12 @@ jobs:
               ParameterValue: $(VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME)
             - ParameterKey: VinylStoreCognitoDomain
               ParameterValue: $(VINYL_STORE_COGNITO_DOMAIN)
+            - ParameterKey: DeploymentRoleAccessKeyId
+              ParameterValue: $(DEPLOYMENT_ROLE_ACCESS_KEY_ID)
+            - ParameterKey: DeploymentRoleSecretAccessKeyId
+              ParameterValue: $(DEPLOYMENT_ROLE_SECRET_ACCESS_KEY_ID)
+            - ParameterKey: MyAWSRoleARN
+              ParameterValue: $(MY_AWS_ROLE_ARN)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
