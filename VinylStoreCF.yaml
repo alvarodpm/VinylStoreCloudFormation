@@ -602,7 +602,7 @@ Resources:
     Properties:
       Description: Secret stored by aws Secrets Manager containing the Deployment Role´s credentials
       Name: VinylStoreDeploymentRoleCredentialsSecret
-      SecretString: !Sub '{"accessKeyId":"${DeploymentRoleAccessKeyId}","secretAccessKey":"${DeploymentRolSecreteAccessKeyId}"}'
+      SecretString: !Sub '{"accessKeyId":"${DeploymentRoleAccessKeyId}","secretAccessKey":"${DeploymentRoleSecretAccessKeyId}"}'
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -623,7 +623,7 @@ Resources:
 Parameters:
   MyAWSRoleARN:
     Type: String
-  DeploymentRolSecreteAccessKeyId:
+  DeploymentRoleSecretAccessKeyId:
     Type: String
   DeploymentRoleAccessKeyId:
     Type: String
