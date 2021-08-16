@@ -597,7 +597,36 @@ Resources:
       Roles:
         authenticated: !GetAtt VinylStoreCognitoIdentityPoolAuthorizedRole.Arn
         unauthenticated: !GetAtt VinylStoreCognitoIdentityPoolUnAuthorizedRole.Arn
+  VinylStoreDeploymentRoleCredentialsSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Secret stored by aws Secrets Manager containing the Deployment Role´s credentials
+      Name: VinylStoreDeploymentRoleCredentialsSecret
+      SecretString: !Sub '{"accessKeyId":"${DeploymentRoleAccessKeyId}","secretAccessKey":"${DeploymentRolSecreteAccessKeyId}"}'
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreDeploymentRoleCredentialsSecretResourcePolicy:
+    Type: AWS::SecretsManager::ResourcePolicy
+    Properties:
+      BlockPublicPolicy: True
+      SecretId: !Ref VinylStoreDeploymentRoleCredentialsSecret
+      ResourcePolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Resource: !Ref VinylStoreDeploymentRoleCredentialsSecret
+            Action: secretsmanager:GetSecretValue
+            Effect: Allow
+            Principal:
+              AWS:
+                !Ref MyAWSRoleARN
 Parameters:
+  MyAWSRoleARN:
+    Type: String
+  DeploymentRolSecreteAccessKeyId:
+    Type: String
+  DeploymentRoleAccessKeyId:
+    Type: String
   UsernameTag:
     Type: String
   APIGatewayResourceVinylsPathPart:
