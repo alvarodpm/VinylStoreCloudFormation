@@ -688,102 +688,8 @@ Resources:
       GroupName: VinylStoreCognitoUserPoolGroupClients
       UserPoolId: !Ref VinylStoreCognitoUserPool
       RoleArn: !GetAtt VinylStoreCognitoIAMRoleClients.Arn
-  VinylStoreCognitoIdentityPool:
-    Type: AWS::Cognito::IdentityPool
-    Properties:
-      AllowUnauthenticatedIdentities: true
-      CognitoIdentityProviders:
-        - ClientId: !Ref VinylStoreCognitoUserPoolClient
-          ProviderName: !GetAtt VinylStoreCognitoUserPool.ProviderName
-      IdentityPoolName: VinylStoreCognitoIdentityPool
-  VinylStoreCognitoIdentityPoolUnAuthorizedRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Federated: "cognito-identity.amazonaws.com"
-            Action:
-              - "sts:AssumeRoleWithWebIdentity"
-            Condition:
-              StringEquals:
-                "cognito-identity.amazonaws.com:aud": !Ref VinylStoreCognitoIdentityPool
-              "ForAnyValue:StringLike":
-                "cognito-identity.amazonaws.com:amr": unauthenticated
-      Policies:
-        - PolicyName: "CognitoUnauthorizedPolicy"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: "Allow"
-                Action:
-                  - "mobileanalytics:PutEvents"
-                  - "cognito-sync:*"
-                Resource: "*"
-  VinylStoreCognitoIdentityPoolAuthorizedRole:
-    Type: "AWS::IAM::Role"
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: "Allow"
-            Principal:
-              Federated: "cognito-identity.amazonaws.com"
-            Action:
-              - "sts:AssumeRoleWithWebIdentity"
-            Condition:
-              StringEquals:
-                "cognito-identity.amazonaws.com:aud": !Ref VinylStoreCognitoIdentityPool
-              "ForAnyValue:StringLike":
-                "cognito-identity.amazonaws.com:amr": authenticated
-      Policies:
-        - PolicyName: "CognitoAuthorizedPolicy"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: "Allow"
-                Action:
-                  - "mobileanalytics:PutEvents"
-                  - "cognito-sync:*"
-                  - "cognito-identity:*"
-                Resource: "*"
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
-  VinylStoreCognitoIdentityPoolRoleMapping:
-    Type: "AWS::Cognito::IdentityPoolRoleAttachment"
-    Properties:
-      IdentityPoolId: !Ref VinylStoreCognitoIdentityPool
-      Roles:
-        authenticated: !GetAtt VinylStoreCognitoIdentityPoolAuthorizedRole.Arn
-        unauthenticated: !GetAtt VinylStoreCognitoIdentityPoolUnAuthorizedRole.Arn
-  
-#SECRETS MANAGER RESOURCES
-  VinylStoreDeploymentRoleCredentialsSecret:
-    Type: AWS::SecretsManager::Secret
-    Properties:
-      Description: Secret stored by aws Secrets Manager containing the Deployment Role´s credentials
-      Name: VinylStoreDeploymentRoleCredentialsSecret
-      SecretString: !Sub '{"accessKeyId":"${DeploymentRoleAccessKeyId}","secretAccessKey":"${DeploymentRoleSecretAccessKeyId}"}'
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
-  VinylStoreDeploymentRoleCredentialsSecretResourcePolicy:
-    Type: AWS::SecretsManager::ResourcePolicy
-    Properties:
-      BlockPublicPolicy: True
-      SecretId: !Ref VinylStoreDeploymentRoleCredentialsSecret
-      ResourcePolicy:
-        Version: "2012-10-17"
-        Statement:
-          - Resource: !Ref VinylStoreDeploymentRoleCredentialsSecret
-            Action: secretsmanager:GetSecretValue
-            Effect: Allow
-            Principal:
-              AWS:
-                !Ref MyAWSRoleARN
+
+#PARAMETERS
 Parameters:
   MyAWSRoleARN:
     Type: String
@@ -842,6 +748,3 @@ Outputs:
   HostedUIURL:
     Value: !Sub https://${VinylStoreCognitoDomain}.auth.us-east-1.amazoncognito.com/login?client_id=${VinylStoreCognitoUserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:4200/home
     Description: Vinyl Store Cognito hosted UI URL
-  VinylStoreCognitoIdentityPoolID:
-    Value: !Ref VinylStoreCognitoIdentityPool
-    Description: Vinyl Store Cognito Identity Pool ID
