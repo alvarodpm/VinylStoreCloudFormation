@@ -1,7 +1,9 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Vinyl Store Application Stack deployed with Azure Devops Pipelines
 Resources:
-  VinylStoreLambdaGET:
+
+#LAMBDA FUNCTIONS - CRUD - VINYLS
+  VinylStoreLambdaGETVinyls:
     Type: AWS::Lambda::Function
     Properties:
       Code:
@@ -17,8 +19,8 @@ Resources:
                 "};",
               ],
             ]
-      FunctionName: !Ref LambdaFuncGETName
-      Handler: !Sub ${VinylStoreLambdaGETScriptName}.handler
+      FunctionName: !Ref LambdaFuncGETVinylsName
+      Handler: !Sub ${VinylStoreLambdaGETVinylsScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
@@ -30,7 +32,7 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
-  VinylStoreLambdaUPDATE:
+  VinylStoreLambdaUPDATEVinyls:
     Type: AWS::Lambda::Function
     Properties:
       Code:
@@ -46,8 +48,8 @@ Resources:
                 "};",
               ],
             ]
-      FunctionName: !Ref LambdaFuncUPDATEName
-      Handler: !Sub ${VinylStoreLambdaUPDATEScriptName}.handler
+      FunctionName: !Ref LambdaFuncUPDATEVinylsName
+      Handler: !Sub ${VinylStoreLambdaUPDATEVinylsScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the UPDATE requests of the Vinyl Store application
@@ -59,7 +61,7 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
-  VinylStoreLambdaPOST:
+  VinylStoreLambdaPOSTVinyls:
     Type: AWS::Lambda::Function
     Properties:
       Code:
@@ -75,8 +77,8 @@ Resources:
                 "};",
               ],
             ]
-      FunctionName: !Ref LambdaFuncPOSTName
-      Handler: !Sub ${VinylStoreLambdaPOSTScriptName}.handler
+      FunctionName: !Ref LambdaFuncPOSTVinylsName
+      Handler: !Sub ${VinylStoreLambdaPOSTVinylsScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the POST requests of the Vinyl Store application
@@ -88,7 +90,7 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
-  VinylStoreLambdaDELETE:
+  VinylStoreLambdaDELETEVinyls:
     Type: AWS::Lambda::Function
     Properties:
       Code:
@@ -104,8 +106,8 @@ Resources:
                 "};",
               ],
             ]
-      FunctionName: !Ref LambdaFuncDELETEName
-      Handler: !Sub ${VinylStoreLambdaDELETEScriptName}.handler
+      FunctionName: !Ref LambdaFuncDELETEVinylsName
+      Handler: !Sub ${VinylStoreLambdaDELETEVinylsScriptName}.handler
       Runtime: nodejs12.x
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
@@ -117,6 +119,126 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
+
+#LAMBDA PERMISSIONS - VINYLS
+  VinylStoreLambdaGETVinylsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaGETVinyls.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaUPDATEVinylsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaUPDATEVinyls.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaPOSTVinylsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaPOSTVinyls.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaDELETEVinylsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaDELETEVinyls.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+
+#LAMBDA FUNCTIONS - PRESIGNED URLS
+  VinylStoreLambdaGETPresignedURLs:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      FunctionName: !Ref LambdaFuncGETPresignedURLSName
+      Handler: !Sub ${VinylStoreLambdaGETPresignedURLSScriptName}.handler
+      Runtime: nodejs12.x
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
+      Description: Lambda function created to create presigned urls to upload images to s3 bucket
+      Environment:
+        Variables:
+          BUCKET_NAME:
+            Ref: VinylStoreS3BucketImagesName
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+    DependsOn: VinylStoreS3BucketImages
+
+#LAMBDA PERMISSIONS - PRESIGNED URLS
+  VinylStoreLambdaGETPresignedURLsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaGETPresignedURLs.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+
+#LAMBDA ROLE
+  VinylStoreRoleLambdas:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Description: Role to assign to all the lambda functions and control their interaction with dynamoDB and the S3 Bucket that contains the images
+      Policies:
+        - PolicyName: VinylStoreRoleLambdasPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:BatchGetItem
+                  - dynamodb:Scan
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource: !GetAtt VinylStoreDynamoDBTable.Arn
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                  - s3:PutObjectAcl
+                Resource: !GetAtt VinylStoreS3BucketImages.Arn
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: arn:aws:logs:*:*:*
+      RoleName: VinylStoreRoleLambdas
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+
+#DYNAMODB TABLE - VINYLS
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -132,6 +254,8 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+
+#API GATEWAY - GENERAL RESOURCES
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
@@ -142,17 +266,43 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
     DependsOn:
-      - VinylStoreLambdaGET
-      - VinylStoreLambdaUPDATE
-      - VinylStoreLambdaPOST
-      - VinylStoreLambdaDELETE
+      - VinylStoreLambdaGETVinyls
+      - VinylStoreLambdaUPDATEVinyls
+      - VinylStoreLambdaPOSTVinyls
+      - VinylStoreLambdaDELETEVinyls
+      - VinylStoreLambdaGETPresignedURLs
+  VinylStoreAPIGatewayAuthorizer:
+    Type: "AWS::ApiGateway::Authorizer"
+    Properties:
+      Type: COGNITO_USER_POOLS
+      IdentitySource: method.request.header.Authorization
+      Name: VinylStoreAPIGatewayAuthorizer
+      ProviderARNs:
+        - !GetAtt VinylStoreCognitoUserPool.Arn
+      RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
+  VinylStoreAPIGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      Description: Deployment for the Frontend to connect to the API Gateway
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      StageName: !Ref "EnvironmentName"
+    DependsOn:
+      - VinylStoreAPIGatewayMethodGETVinyls
+      - VinylStoreAPIGatewayMethodUPDATEVinyls
+      - VinylStoreAPIGatewayMethodPOSTVinyls
+      - VinylStoreAPIGatewayMethodDELETEVinyls
+      - VinylStoreAPIGatewayMethodOPTIONSVinyls
+      - VinylStoreAPIGatewayMethodOPTIONSPresignedURLS
+      - VinylStoreAPIGatewayMethodGETPresignedURLS
+
+#API Gateway - VINYLS RESOURCES
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ParentId: !GetAtt "VinylStoreAPIGatewayRESTAPI.RootResourceId"
       PathPart: !Ref "APIGatewayResourceVinylsPathPart"
-  VinylStoreAPIGatewayMethodGET:
+  VinylStoreAPIGatewayMethodGETVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: COGNITO_USER_POOLS
@@ -167,8 +317,8 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGET.Arn}/invocations"
-  VinylStoreAPIGatewayMethodUPDATE:
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETVinyls.Arn}/invocations"
+  VinylStoreAPIGatewayMethodUPDATEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: COGNITO_USER_POOLS
@@ -183,8 +333,8 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATE.Arn}/invocations"
-  VinylStoreAPIGatewayMethodPOST:
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATEVinyls.Arn}/invocations"
+  VinylStoreAPIGatewayMethodPOSTVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: COGNITO_USER_POOLS
@@ -199,8 +349,8 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOST.Arn}/invocations"
-  VinylStoreAPIGatewayMethodDELETE:
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOSTVinyls.Arn}/invocations"
+  VinylStoreAPIGatewayMethodDELETEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
       AuthorizationType: COGNITO_USER_POOLS
@@ -215,8 +365,8 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETE.Arn}/invocations"
-  VinylStoreAPIGatewayMethodOPTIONS:
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETEVinyls.Arn}/invocations"
+  VinylStoreAPIGatewayMethodOPTIONSVinyls:
     Type: "AWS::ApiGateway::Method"
     Properties:
       AuthorizationType: COGNITO_USER_POOLS
@@ -247,95 +397,92 @@ Resources:
             method.response.header.Access-Control-Allow-Headers: false
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
-  VinylStoreAPIGatewayDeployment:
-    Type: AWS::ApiGateway::Deployment
+
+#API Gateway - PRESIGNED URLS RESOURCES
+  VinylStoreAPIGatewayResourcePresignedURLS:
+    Type: AWS::ApiGateway::Resource
     Properties:
-      Description: Deployment for the Frontend to connect to the API Gateway
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
-      StageName: !Ref "EnvironmentName"
-    DependsOn:
-      - VinylStoreAPIGatewayMethodGET
-      - VinylStoreAPIGatewayMethodUPDATE
-      - VinylStoreAPIGatewayMethodPOST
-      - VinylStoreAPIGatewayMethodDELETE
-  VinylStoreAPIGatewayAuthorizer:
-    Type: "AWS::ApiGateway::Authorizer"
+      ParentId: !GetAtt "VinylStoreAPIGatewayRESTAPI.RootResourceId"
+      PathPart: !Ref "APIGatewayResourcePresignedURLSPathPart"
+  VinylStoreAPIGatewayMethodGETPresignedURLS:
+    Type: AWS::ApiGateway::Method
     Properties:
-      Type: COGNITO_USER_POOLS
-      IdentitySource: method.request.header.Authorization
-      Name: VinylStoreAPIGatewayAuthorizer
-      ProviderARNs:
-        - !GetAtt VinylStoreCognitoUserPool.Arn
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourcePresignedURLS"
+      HttpMethod: GET
+      MethodResponses:
+        - StatusCode: "200"
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: "200"
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETPresignedURLs.Arn}/invocations"
+  VinylStoreAPIGatewayMethodOPTIONSPresignedURLS:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      HttpMethod: OPTIONS
+      OperationName: OrdersOptions
+      ResourceId: !Ref VinylStoreAPIGatewayResourcePresignedURLS
       RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
-  VinylStoreLambdaGETPermission:
-    Type: AWS::Lambda::Permission
+      Integration:
+        ContentHandling: CONVERT_TO_TEXT
+        IntegrationResponses:
+          - StatusCode: "200"
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'*'"
+              method.response.header.Access-Control-Allow-Methods: "'GET,POST,OPTIONS,PUT,DELETE'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            ResponseTemplates:
+              application/json: ""
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+        - StatusCode: "200"
+          ResponseModels:
+            application/json: Empty
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: false
+            method.response.header.Access-Control-Allow-Methods: false
+            method.response.header.Access-Control-Allow-Origin: false
+
+#S3 BUCKET IMAGES
+  VinylStoreS3BucketImages:
+    Type: AWS::S3::Bucket
     Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt "VinylStoreLambdaGET.Arn"
-      Principal: apigateway.amazonaws.com
-    DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreLambdaUPDATEPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt "VinylStoreLambdaUPDATE.Arn"
-      Principal: apigateway.amazonaws.com
-    DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreLambdaPOSTPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt "VinylStoreLambdaPOST.Arn"
-      Principal: apigateway.amazonaws.com
-    DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreLambdaDELETEPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt "VinylStoreLambdaDELETE.Arn"
-      Principal: apigateway.amazonaws.com
-    DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreRoleLambdas:
-    Type: AWS::IAM::Role
-    Properties:
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Principal:
-              Service:
-                - lambda.amazonaws.com
-            Action:
-              - sts:AssumeRole
-      Path: /
-      Description: Role to assign to all the lambda functions and control their interaction with dynamoDB
-      Policies:
-        - PolicyName: VinylStoreRoleLambdasPolicy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Effect: Allow
-                Action:
-                  - dynamodb:GetItem
-                  - dynamodb:Query
-                  - dynamodb:BatchGetItem
-                  - dynamodb:Scan
-                  - dynamodb:BatchWriteItem
-                  - dynamodb:PutItem
-                  - dynamodb:UpdateItem
-                  - dynamodb:DeleteItem
-                Resource: !GetAtt VinylStoreDynamoDBTable.Arn
-              - Effect: Allow
-                Action:
-                  - logs:CreateLogStream
-                  - logs:CreateLogGroup
-                  - logs:PutLogEvents
-                  - logs:DescribeLogStreams
-                Resource: arn:aws:logs:*:*:*
-      RoleName: VinylStoreRoleLambdas
+      AccessControl: Private
+      BucketName: !Ref VinylStoreS3BucketImagesName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+  ##VinylStoreS3BucketImagesBucketPolicy:
+  ##  Type: AWS::S3::BucketPolicy
+  ##  Properties:
+  ##    Bucket: !Ref VinylStoreS3BucketImagesName
+  ##    PolicyDocument:
+  ##      Version: "2012-10-17"
+  ##      Statement:
+  ##        - Effect: Allow
+  ##          Sid: AccessObjectsOnlyThroughASpecificCloudFrontDistribution
+  ##          Principal:
+  ##            AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}"
+  ##          Action: s3:GetObject
+  ##          Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*  
+  
+
+#CLOUDFRONT RESOURCES
   VinylStoreCloudFrontS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -418,6 +565,8 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+
+#COGNITO RESOURCES
   VinylStoreCognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -590,13 +739,15 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-  VinylStoreIdentityPoolRoleMapping:
+  VinylStoreCognitoIdentityPoolRoleMapping:
     Type: "AWS::Cognito::IdentityPoolRoleAttachment"
     Properties:
       IdentityPoolId: !Ref VinylStoreCognitoIdentityPool
       Roles:
         authenticated: !GetAtt VinylStoreCognitoIdentityPoolAuthorizedRole.Arn
         unauthenticated: !GetAtt VinylStoreCognitoIdentityPoolUnAuthorizedRole.Arn
+  
+#SECRETS MANAGER RESOURCES
   VinylStoreDeploymentRoleCredentialsSecret:
     Type: AWS::SecretsManager::Secret
     Properties:
@@ -631,13 +782,17 @@ Parameters:
     Type: String
   APIGatewayResourceVinylsPathPart:
     Type: String
-  LambdaFuncUPDATEName:
+  APIGatewayResourcePresignedURLSPathPart:
     Type: String
-  LambdaFuncDELETEName:
+  LambdaFuncUPDATEVinylsName:
     Type: String
-  LambdaFuncGETName:
+  LambdaFuncDELETEVinylsName:
     Type: String
-  LambdaFuncPOSTName:
+  LambdaFuncGETVinylsName:
+    Type: String
+  LambdaFuncPOSTVinylsName:
+    Type: String
+  LambdaFuncGETPresignedURLSName:
     Type: String
   DynamoDBTableName:
     Type: String
@@ -647,13 +802,17 @@ Parameters:
     Type: String
   VinylStoreCloudFrontS3BucketName:
     Type: String
-  VinylStoreLambdaGETScriptName:
+  VinylStoreLambdaGETVinylsScriptName:
     Type: String
-  VinylStoreLambdaPOSTScriptName:
+  VinylStoreLambdaPOSTVinylsScriptName:
     Type: String
-  VinylStoreLambdaDELETEScriptName:
+  VinylStoreLambdaDELETEVinylsScriptName:
     Type: String
-  VinylStoreLambdaUPDATEScriptName:
+  VinylStoreLambdaUPDATEVinylsScriptName:
+    Type: String
+  VinylStoreLambdaGETPresignedURLSScriptName:
+    Type: String
+  VinylStoreS3BucketImagesName:
     Type: String
   VinylStoreCognitoDomain:
     Type: String
@@ -670,6 +829,6 @@ Outputs:
   HostedUIURL:
     Value: !Sub https://${VinylStoreCognitoDomain}.auth.us-east-1.amazoncognito.com/login?client_id=${VinylStoreCognitoUserPoolClient}&response_type=code&scope=email+openid+phone+profile&redirect_uri=http://localhost:4200/home
     Description: Vinyl Store Cognito hosted UI URL
-  VinylStoreIdentityPoolID:
+  VinylStoreCognitoIdentityPoolID:
     Value: !Ref VinylStoreCognitoIdentityPool
     Description: Vinyl Store Cognito Identity Pool ID
