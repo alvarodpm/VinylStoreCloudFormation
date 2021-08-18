@@ -15,22 +15,26 @@ parameters:
 variables:
   USERNAME_TAG: $(UsernameTag)
   API_GATEWAY_RESOURCE_VINYLS_PATH_PART: $(APIGatewayResourceVinylsPathPart)
-  LAMBDA_FUNC_UPDATE_NAME: $(LambdaFuncUPDATEName)
-  LAMBDA_FUNC_DELETE_NAME: $(LambdaFuncDELETEName)
-  LAMBDA_FUNC_GET_NAME: $(LambdaFuncGETName)
-  LAMBDA_FUNC_POST_NAME: $(LambdaFuncPOSTName)
+  LAMBDA_FUNC_UPDATE_VINYLS_NAME: $(LambdaFuncUPDATEVinylsName)
+  LAMBDA_FUNC_DELETE_VINYLS_NAME: $(LambdaFuncDELETEVinylsName)
+  LAMBDA_FUNC_GET_VINYLS_NAME: $(LambdaFuncGETVinylsName)
+  LAMBDA_FUNC_POST_VINYLS_NAME: $(LambdaFuncPOSTVinylsName)
   DYNAMO_DB_TABLE_NAME: $(DynamoDBTableName)
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
   VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME: $(VinylStoreCloudFrontS3BucketName)
-  VINYL_STORE_LAMBDA_GET_SCRIPT_NAME: $(VinylStoreLambdaGETScriptName)
-  VINYL_STORE_LAMBDA_POST_SCRIPT_NAME: $(VinylStoreLambdaPOSTScriptName)
-  VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME: $(VinylStoreLambdaDELETEScriptName)
-  VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME: $(VinylStoreLambdaUPDATEScriptName)
+  VINYL_STORE_LAMBDA_GET_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaGETVinylsScriptName)
+  VINYL_STORE_LAMBDA_POST_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaPOSTVinylsScriptName)
+  VINYL_STORE_LAMBDA_DELETE_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaDELETEVinylsScriptName)
+  VINYL_STORE_LAMBDA_UPDATE_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaUPDATEVinylsScriptName)
   VINYL_STORE_COGNITO_DOMAIN: $(VinylStoreCognitoDomain)
   DEPLOYMENT_ROLE_ACCESS_KEY_ID: $(DeploymentRoleAccessKeyId)
   DEPLOYMENT_ROLE_SECRET_ACCESS_KEY_ID: $(DeploymentRoleSecretAccessKeyId)
   MY_AWS_ROLE_ARN: $(MyAWSRoleARN)
+  API_GATEWAY_RESOURCE_PRESIGNED_URLS_PATH_PART: $(APIGatewayResourcePresignedURLSPathPart)
+  VINYL_STORE_S3_BUCKET_IMAGES_NAME: $(VinylStoreS3BucketImagesName)
+  VINYL_STORE_LAMBDA_GET_PRESIGNED_URLS_SCRIPT_NAME: $(VinylStoreLambdaGETPresignedURLSScriptName)
+  LAMBDA_FUNC_GET_PRESIGNED_URLS_NAME: $(LambdaFuncGETPresignedURLSName)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -57,14 +61,14 @@ jobs:
               ParameterValue: $(USERNAME_TAG)
             - ParameterKey: APIGatewayResourceVinylsPathPart
               ParameterValue: $(API_GATEWAY_RESOURCE_VINYLS_PATH_PART)
-            - ParameterKey: LambdaFuncUPDATEName
-              ParameterValue: $(LAMBDA_FUNC_UPDATE_NAME)
-            - ParameterKey: LambdaFuncDELETEName
-              ParameterValue: $(LAMBDA_FUNC_DELETE_NAME)
-            - ParameterKey: LambdaFuncGETName
-              ParameterValue: $(LAMBDA_FUNC_GET_NAME)
-            - ParameterKey: LambdaFuncPOSTName
-              ParameterValue: $(LAMBDA_FUNC_POST_NAME)
+            - ParameterKey: LambdaFuncUPDATEVinylsName
+              ParameterValue: $(LAMBDA_FUNC_UPDATE_VINYLS_NAME)
+            - ParameterKey: LambdaFuncDELETEVinylsName
+              ParameterValue: $(LAMBDA_FUNC_DELETE_VINYLS_NAME)
+            - ParameterKey: LambdaFuncGETVinylsName
+              ParameterValue: $(LAMBDA_FUNC_GET_VINYLS_NAME)
+            - ParameterKey: LambdaFuncPOSTVinylsName
+              ParameterValue: $(LAMBDA_FUNC_POST_VINYLS_NAME)
             - ParameterKey: DynamoDBTableName
               ParameterValue: $(DYNAMO_DB_TABLE_NAME)
             - ParameterKey: APIName
@@ -73,14 +77,14 @@ jobs:
               ParameterValue: $(ENVIRONMENT_NAME)
             - ParameterKey: VinylStoreCloudFrontS3BucketName
               ParameterValue: $(VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME)
-            - ParameterKey: VinylStoreLambdaGETScriptName
-              ParameterValue: $(VINYL_STORE_LAMBDA_GET_SCRIPT_NAME)
-            - ParameterKey: VinylStoreLambdaPOSTScriptName
-              ParameterValue: $(VINYL_STORE_LAMBDA_POST_SCRIPT_NAME)
-            - ParameterKey: VinylStoreLambdaDELETEScriptName
-              ParameterValue: $(VINYL_STORE_LAMBDA_DELETE_SCRIPT_NAME)
-            - ParameterKey: VinylStoreLambdaUPDATEScriptName
-              ParameterValue: $(VINYL_STORE_LAMBDA_UPDATE_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaGETVinylsScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_GET_VINYLS_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaPOSTVinylsScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_POST_VINYLS_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaDELETEVinylsScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_DELETE_VINYLS_SCRIPT_NAME)
+            - ParameterKey: VinylStoreLambdaUPDATEVinylsScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_UPDATE_VINYLS_SCRIPT_NAME)
             - ParameterKey: VinylStoreCognitoDomain
               ParameterValue: $(VINYL_STORE_COGNITO_DOMAIN)
             - ParameterKey: DeploymentRoleAccessKeyId
@@ -89,6 +93,14 @@ jobs:
               ParameterValue: $(DEPLOYMENT_ROLE_SECRET_ACCESS_KEY_ID)
             - ParameterKey: MyAWSRoleARN
               ParameterValue: $(MY_AWS_ROLE_ARN)
+            - ParameterKey: APIGatewayResourcePresignedURLSPathPart
+              ParameterValue: $(API_GATEWAY_RESOURCE_PRESIGNED_URLS_PATH_PART)
+            - ParameterKey: VinylStoreS3BucketImagesName
+              ParameterValue: $(VINYL_STORE_S3_BUCKET_IMAGES_NAME)
+            - ParameterKey: VinylStoreLambdaGETPresignedURLSScriptName
+              ParameterValue: $(VINYL_STORE_LAMBDA_GET_PRESIGNED_URLS_SCRIPT_NAME)
+            - ParameterKey: LambdaFuncGETPresignedURLSName
+              ParameterValue: $(LAMBDA_FUNC_GET_PRESIGNED_URLS_NAME)
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
