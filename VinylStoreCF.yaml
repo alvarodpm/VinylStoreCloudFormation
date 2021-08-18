@@ -225,6 +225,7 @@ Resources:
                   - s3:GetObject
                   - s3:DeleteObject
                   - s3:PutObjectAcl
+                  - s3:ListObjects
                 Resource: !GetAtt VinylStoreS3BucketImages.Arn
               - Effect: Allow
                 Action:
@@ -467,19 +468,29 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-  ##VinylStoreS3BucketImagesBucketPolicy:
-  ##  Type: AWS::S3::BucketPolicy
-  ##  Properties:
-  ##    Bucket: !Ref VinylStoreS3BucketImagesName
-  ##    PolicyDocument:
-  ##      Version: "2012-10-17"
-  ##      Statement:
-  ##        - Effect: Allow
-  ##          Sid: AccessObjectsOnlyThroughASpecificCloudFrontDistribution
-  ##          Principal:
-  ##            AWS: !Sub "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${VinylStoreCloudFrontOriginIdentity}"
-  ##          Action: s3:GetObject
-  ##          Resource: !Sub arn:aws:s3:::${VinylStoreCloudFrontS3BucketName}/*  
+  VinylStoreS3BucketImagesBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref VinylStoreS3BucketImagesName
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt VinylStoreCognitoIAMRoleClients.Arn
+                - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
+            Action: 
+              - s3:Get*
+              - s3:List*
+            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*  
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
+            Action: 
+              - s3:PutObject
+            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
   
 
 #CLOUDFRONT RESOURCES
@@ -669,12 +680,14 @@ Resources:
       Description: Cognito User Pool Group which contains the users of the Vinyl Store application with admin privileges
       GroupName: VinylStoreCognitoUserPoolGroupAdmins
       UserPoolId: !Ref VinylStoreCognitoUserPool
+      RoleArn: !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
   VinylStoreCognitoUserPoolGroupClients:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
       Description: Cognito User Pool Group which contains the users of the Vinyl Store application with client privileges
       GroupName: VinylStoreCognitoUserPoolGroupClients
       UserPoolId: !Ref VinylStoreCognitoUserPool
+      RoleArn: !GetAtt VinylStoreCognitoIAMRoleClients.Arn
   VinylStoreCognitoIdentityPool:
     Type: AWS::Cognito::IdentityPool
     Properties:
