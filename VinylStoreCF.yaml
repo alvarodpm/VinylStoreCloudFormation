@@ -370,10 +370,9 @@ Resources:
   VinylStoreAPIGatewayMethodOPTIONSVinyls:
     Type: "AWS::ApiGateway::Method"
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: NONE
       HttpMethod: OPTIONS
-      OperationName: OrdersOptions
+      OperationName: VinylsOptions
       ResourceId: !Ref VinylStoreAPIGatewayResourceVinyls
       RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
       Integration:
@@ -425,10 +424,9 @@ Resources:
   VinylStoreAPIGatewayMethodOPTIONSPresignedURLS:
     Type: "AWS::ApiGateway::Method"
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: NONE
       HttpMethod: OPTIONS
-      OperationName: OrdersOptions
+      OperationName: PresignedURLsOptions
       ResourceId: !Ref VinylStoreAPIGatewayResourcePresignedURLS
       RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
       Integration:
