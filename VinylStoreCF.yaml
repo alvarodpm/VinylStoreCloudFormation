@@ -463,6 +463,17 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+            AllowedOrigins:
+              - '*'
+            Id: VinylStoreS3BucketImagesCORSRule
       Tags:
         - Key: user
           Value: !Ref UsernameTag
