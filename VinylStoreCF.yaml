@@ -497,7 +497,7 @@ Resources:
             Principal:
               AWS:
                 - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
-                - !GetAtt VinylStoreLambdaGETPresignedURLs.Arn
+                - !GetAtt VinylStoreRoleLambdas.Arn
             Action: 
               - s3:PutObject
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
