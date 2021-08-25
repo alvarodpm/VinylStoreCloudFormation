@@ -635,10 +635,15 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service:
-                - apigateway.amazonaws.com
+              Federated:
+                - cognito-identity.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref VinylStoreCognitoIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
       Path: /
       Policies:
         - PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
@@ -647,12 +652,8 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - apigateway:PATCH
-                  - apigateway:POST
-                  - apigateway:PUT
-                  - apigateway:GET
-                  - apigateway:DELETE
-                Resource: !Sub arn:aws:apigateway:us-east-1::/restapis/${VinylStoreAPIGatewayRESTAPI}/resources/${VinylStoreAPIGatewayResourceVinyls}/*
+                  - execute-api:Invoke
+                Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
       Description: IAM Role Policy to give the Vinyl Store application admin users permissions to access all the API GATEWAY Methods of the Vinyls Resource
       RoleName: VinylStoreCognitoIAMRoleAdmins
       Tags:
@@ -666,10 +667,15 @@ Resources:
         Statement:
           - Effect: Allow
             Principal:
-              Service:
-                - apigateway.amazonaws.com
+              Federated:
+                - cognito-identity.amazonaws.com
             Action:
-              - "sts:AssumeRole"
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "cognito-identity.amazonaws.com:aud": !Ref VinylStoreCognitoIdentityPool
+              "ForAnyValue:StringLike":
+                "cognito-identity.amazonaws.com:amr": authenticated
       Path: /
       Policies:
         - PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
@@ -677,8 +683,9 @@ Resources:
             Version: "2012-10-17"
             Statement:
               - Effect: Allow
-                Action: apigateway:GET
-                Resource: !Sub arn:aws:apigateway:us-east-1::/restapis/${VinylStoreAPIGatewayRESTAPI}/resources/${VinylStoreAPIGatewayResourceVinyls}/*
+                Action:
+                  - execute-api:Invoke
+                Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
       Description: IAM Role Policy to give the Vinyl Store application client users permissions to access  the API Gateway GET Method of the Vinyls Resource
       RoleName: VinylStoreCognitoIAMRoleClients
       Tags:
@@ -769,6 +776,11 @@ Resources:
       Roles:
         authenticated: !GetAtt VinylStoreCognitoIdentityPoolAuthorizedRole.Arn
         unauthenticated: !GetAtt VinylStoreCognitoIdentityPoolUnAuthorizedRole.Arn
+      RoleMappings:
+        "VinylStoreCognitoUserPool":
+          IdentityProvider: !Ref VinylStoreCognitoUserPool
+          AmbiguousRoleResolution: Deny
+          Type: Token
 
 #PARAMETERS
 Parameters:
