@@ -777,8 +777,8 @@ Resources:
         authenticated: !GetAtt VinylStoreCognitoIdentityPoolAuthorizedRole.Arn
         unauthenticated: !GetAtt VinylStoreCognitoIdentityPoolUnAuthorizedRole.Arn
       RoleMappings:
-        "VinylStoreCognitoUserPool":
-          IdentityProvider: !Ref VinylStoreCognitoUserPool
+        "VinylStoreCognitoRoleMapping":
+          IdentityProvider: !Sub cognito-idp.us-east-1.amazonaws.com/${VinylStoreCognitoUserPool}:${VinylStoreCognitoUserPoolClient}
           AmbiguousRoleResolution: Deny
           Type: Token
 
