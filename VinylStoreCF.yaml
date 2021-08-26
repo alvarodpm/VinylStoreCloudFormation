@@ -672,32 +672,32 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-  # VinylStoreCognitoIAMRoleAdminsPolicy:
-  #   Type: AWS::IAM::Policy
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - execute-api:Invoke
-  #           Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
-  #     PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
-  #     Roles:
-  #       - !Ref VinylStoreCognitoIAMRoleAdmins
-  # VinylStoreCognitoIAMRoleClientsPolicy:
-  #   Type: AWS::IAM::Policy
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: "2012-10-17"
-  #       Statement:
-  #         - Effect: Allow
-  #           Action:
-  #             - execute-api:Invoke
-  #           Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
-  #     PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
-  #     Roles:
-  #       - !Ref VinylStoreCognitoIAMRoleClients
+  VinylStoreCognitoIAMRoleAdminsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - execute-api:Invoke
+            Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
+      PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
+      Roles:
+        - !Ref VinylStoreCognitoIAMRoleAdmins
+  VinylStoreCognitoIAMRoleClientsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - execute-api:Invoke
+            Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
+      PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
+      Roles:
+        - !Ref VinylStoreCognitoIAMRoleClients
   VinylStoreCognitoUserPoolGroupAdmins:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
