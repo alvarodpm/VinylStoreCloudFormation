@@ -1,8 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Vinyl Store Application Stack deployed with Azure Devops Pipelines
 Resources:
-
-#LAMBDA FUNCTIONS - CRUD - VINYLS
+  #LAMBDA FUNCTIONS - CRUD - VINYLS
   VinylStoreLambdaGETVinyls:
     Type: AWS::Lambda::Function
     Properties:
@@ -120,7 +119,7 @@ Resources:
           Value: !Ref UsernameTag
     DependsOn: VinylStoreDynamoDBTable
 
-#LAMBDA PERMISSIONS - VINYLS
+  #LAMBDA PERMISSIONS - VINYLS
   VinylStoreLambdaGETVinylsPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -150,7 +149,7 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
 
-#LAMBDA FUNCTIONS - PRESIGNED URLS
+  #LAMBDA FUNCTIONS - PRESIGNED URLS
   VinylStoreLambdaGETPresignedURLs:
     Type: AWS::Lambda::Function
     Properties:
@@ -179,7 +178,7 @@ Resources:
           Value: !Ref UsernameTag
     DependsOn: VinylStoreS3BucketImages
 
-#LAMBDA PERMISSIONS - PRESIGNED URLS
+  #LAMBDA PERMISSIONS - PRESIGNED URLS
   VinylStoreLambdaGETPresignedURLsPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -188,7 +187,7 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
 
-#LAMBDA ROLE
+  #LAMBDA ROLE
   VinylStoreRoleLambdas:
     Type: AWS::IAM::Role
     Properties:
@@ -239,7 +238,7 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
 
-#DYNAMODB TABLE - VINYLS
+  #DYNAMODB TABLE - VINYLS
   VinylStoreDynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -256,13 +255,30 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
 
-#API GATEWAY - GENERAL RESOURCES
+  #API GATEWAY - GENERAL RESOURCES
   VinylStoreAPIGatewayRESTAPI:
     Type: AWS::ApiGateway::RestApi
     Properties:
       Description: REST API to handle the Vinyl Store Application requests
       Name:
         Ref: APIName
+      Policy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
+            Action:
+              - execute-api:Invoke
+            Resource: !Sub execute-api:/${EnvironmentName}/*/*
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !GetAtt VinylStoreCognitoIAMRoleClients.Arn
+            Action:
+              - execute-api:Invoke
+            Resource: !Sub execute-api:/${EnvironmentName}/GET/*
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -272,15 +288,6 @@ Resources:
       - VinylStoreLambdaPOSTVinyls
       - VinylStoreLambdaDELETEVinyls
       - VinylStoreLambdaGETPresignedURLs
-  VinylStoreAPIGatewayAuthorizer:
-    Type: "AWS::ApiGateway::Authorizer"
-    Properties:
-      Type: COGNITO_USER_POOLS
-      IdentitySource: method.request.header.Authorization
-      Name: VinylStoreAPIGatewayAuthorizer
-      ProviderARNs:
-        - !GetAtt VinylStoreCognitoUserPool.Arn
-      RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
@@ -296,7 +303,7 @@ Resources:
       - VinylStoreAPIGatewayMethodOPTIONSPresignedURLS
       - VinylStoreAPIGatewayMethodGETPresignedURLS
 
-#API Gateway - VINYLS RESOURCES
+  #API Gateway - VINYLS RESOURCES
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -306,8 +313,7 @@ Resources:
   VinylStoreAPIGatewayMethodGETVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: AWS_IAM
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: GET
@@ -322,8 +328,7 @@ Resources:
   VinylStoreAPIGatewayMethodUPDATEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: AWS_IAM
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: PUT
@@ -338,8 +343,7 @@ Resources:
   VinylStoreAPIGatewayMethodPOSTVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: AWS_IAM
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: POST
@@ -354,8 +358,7 @@ Resources:
   VinylStoreAPIGatewayMethodDELETEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: AWS_IAM
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: DELETE
@@ -398,7 +401,7 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
 
-#API Gateway - PRESIGNED URLS RESOURCES
+  #API Gateway - PRESIGNED URLS RESOURCES
   VinylStoreAPIGatewayResourcePresignedURLS:
     Type: AWS::ApiGateway::Resource
     Properties:
@@ -408,8 +411,7 @@ Resources:
   VinylStoreAPIGatewayMethodGETPresignedURLS:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: COGNITO_USER_POOLS
-      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizer
+      AuthorizationType: AWS_IAM
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourcePresignedURLS"
       HttpMethod: GET
@@ -452,7 +454,7 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
 
-#S3 BUCKET IMAGES
+  #S3 BUCKET IMAGES
   VinylStoreS3BucketImages:
     Type: AWS::S3::Bucket
     Properties:
@@ -466,13 +468,13 @@ Resources:
       CorsConfiguration:
         CorsRules:
           - AllowedHeaders:
-              - '*'
+              - "*"
             AllowedMethods:
               - GET
               - PUT
               - POST
             AllowedOrigins:
-              - '*'
+              - "*"
             Id: VinylStoreS3BucketImagesCORSRule
       Tags:
         - Key: user
@@ -489,21 +491,20 @@ Resources:
               AWS:
                 - !GetAtt VinylStoreCognitoIAMRoleClients.Arn
                 - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
-            Action: 
+            Action:
               - s3:Get*
               - s3:List*
-            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*  
+            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
           - Effect: Allow
             Principal:
               AWS:
                 - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
                 - !GetAtt VinylStoreRoleLambdas.Arn
-            Action: 
+            Action:
               - s3:PutObject
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
-  
 
-#CLOUDFRONT RESOURCES
+  #CLOUDFRONT RESOURCES
   VinylStoreCloudFrontS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -587,7 +588,7 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
 
-#COGNITO RESOURCES
+  #COGNITO RESOURCES
   VinylStoreCognitoUserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -644,17 +645,7 @@ Resources:
                 "cognito-identity.amazonaws.com:aud": !Ref VinylStoreCognitoIdentityPool
               "ForAnyValue:StringLike":
                 "cognito-identity.amazonaws.com:amr": authenticated
-      Path: /
-      Policies:
-        - PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - execute-api:Invoke
-                Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
-      Description: IAM Role Policy to give the Vinyl Store application admin users permissions to access all the API GATEWAY Methods of the Vinyls Resource
+      Description: IAM Role to give the Vinyl Store application admin users permissions to access all the API GATEWAY Methods of the Vinyls Resource
       RoleName: VinylStoreCognitoIAMRoleAdmins
       Tags:
         - Key: user
@@ -676,21 +667,37 @@ Resources:
                 "cognito-identity.amazonaws.com:aud": !Ref VinylStoreCognitoIdentityPool
               "ForAnyValue:StringLike":
                 "cognito-identity.amazonaws.com:amr": authenticated
-      Path: /
-      Policies:
-        - PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - execute-api:Invoke
-                Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
-      Description: IAM Role Policy to give the Vinyl Store application client users permissions to access  the API Gateway GET Method of the Vinyls Resource
+      Description: IAM Role to give the Vinyl Store application client users permissions to access  the API Gateway GET Method of the Vinyls Resource
       RoleName: VinylStoreCognitoIAMRoleClients
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+  # VinylStoreCognitoIAMRoleAdminsPolicy:
+  #   Type: AWS::IAM::Policy
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Action:
+  #             - execute-api:Invoke
+  #           Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
+  #     PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
+  #     Roles:
+  #       - !Ref VinylStoreCognitoIAMRoleAdmins
+  # VinylStoreCognitoIAMRoleClientsPolicy:
+  #   Type: AWS::IAM::Policy
+  #   Properties:
+  #     PolicyDocument:
+  #       Version: "2012-10-17"
+  #       Statement:
+  #         - Effect: Allow
+  #           Action:
+  #             - execute-api:Invoke
+  #           Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
+  #     PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
+  #     Roles:
+  #       - !Ref VinylStoreCognitoIAMRoleClients
   VinylStoreCognitoUserPoolGroupAdmins:
     Type: AWS::Cognito::UserPoolGroup
     Properties:
