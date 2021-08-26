@@ -705,6 +705,7 @@ Resources:
       Description: Cognito User Pool Group which contains the users of the Vinyl Store application with client privileges
       GroupName: VinylStoreCognitoUserPoolGroupClients
       UserPoolId: !Ref VinylStoreCognitoUserPool
+      Precedence: 1
       RoleArn: !GetAtt VinylStoreCognitoIAMRoleClients.Arn
   VinylStoreCognitoIdentityPool:
     Type: AWS::Cognito::IdentityPool
