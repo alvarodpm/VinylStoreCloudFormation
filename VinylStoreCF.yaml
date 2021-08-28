@@ -758,6 +758,10 @@ Resources:
                   - "cognito-sync:*"
                   - "cognito-identity:*"
                 Resource: "*"
+              - Effect: Allow
+                Action:
+                  - execute-api:Invoke
+                Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
       Tags:
         - Key: user
           Value: !Ref UsernameTag
