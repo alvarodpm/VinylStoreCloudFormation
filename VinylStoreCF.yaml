@@ -262,23 +262,6 @@ Resources:
       Description: REST API to handle the Vinyl Store Application requests
       Name:
         Ref: APIName
-      Policy:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS:
-                - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
-            Action:
-              - execute-api:Invoke
-            Resource: !Sub execute-api:/${EnvironmentName}/*/*
-          - Effect: Allow
-            Principal:
-              AWS:
-                - !GetAtt VinylStoreCognitoIAMRoleClients.Arn
-            Action:
-              - execute-api:Invoke
-            Resource: !Sub execute-api:/${EnvironmentName}/GET/*
       Tags:
         - Key: user
           Value: !Ref UsernameTag
