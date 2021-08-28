@@ -664,7 +664,8 @@ Resources:
           - Effect: Allow
             Action:
               - execute-api:Invoke
-            Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
+              - execute-api:ManageConnections
+            Resource: arn:aws:execute-api:*:*:*
       PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
       Roles:
         - !Ref VinylStoreCognitoIAMRoleAdmins
@@ -677,7 +678,8 @@ Resources:
           - Effect: Allow
             Action:
               - execute-api:Invoke
-            Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
+              - execute-api:ManageConnections
+            Resource: arn:aws:execute-api:*:*:*
       PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
       Roles:
         - !Ref VinylStoreCognitoIAMRoleClients
@@ -731,6 +733,11 @@ Resources:
                   - "mobileanalytics:PutEvents"
                   - "cognito-sync:*"
                 Resource: "*"
+              - Effect: Allow
+                Action:
+                  - execute-api:Invoke
+                  - execute-api:ManageConnections
+                Resource: arn:aws:execute-api:*:*:*
   VinylStoreCognitoIdentityPoolAuthorizedRole:
     Type: "AWS::IAM::Role"
     Properties:
@@ -761,7 +768,8 @@ Resources:
               - Effect: Allow
                 Action:
                   - execute-api:Invoke
-                Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
+                  - execute-api:ManageConnections
+                Resource: arn:aws:execute-api:*:*:*
       Tags:
         - Key: user
           Value: !Ref UsernameTag
