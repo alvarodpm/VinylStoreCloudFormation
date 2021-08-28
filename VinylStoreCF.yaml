@@ -279,6 +279,13 @@ Resources:
             Action:
               - execute-api:Invoke
             Resource: !Sub execute-api:/${EnvironmentName}/GET/*
+          - Effect: Allow
+            Principal:
+              AWS:
+                - "*"
+            Action:
+              - execute-api:Invoke
+            Resource: !Sub execute-api:/${EnvironmentName}/OPTIONS/*
       Tags:
         - Key: user
           Value: !Ref UsernameTag
