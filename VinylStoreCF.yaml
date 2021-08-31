@@ -562,7 +562,8 @@ Resources:
   VinylStoreAPIGatewayMethodGETPresignedURLS:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: AWS_IAM
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerAdmin
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourcePresignedURLS"
       HttpMethod: GET
