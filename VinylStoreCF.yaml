@@ -1,6 +1,74 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: Vinyl Store Application Stack deployed with Azure Devops Pipelines
 Resources:
+  #LAMBDA FUNCTIONS - AUTHORIZERS
+  VinylStoreLambdaAuthorizerAdmins:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "const dynamo = new AWS.DynamoDB.DocumentClient();",
+                "const TABLE_NAME = process.env.VINYLS_TABLE;",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      Description: Lambda Authorizer for Admin users
+      FunctionName: VinylStoreLambdaFunctionAuthorizerAdmins
+      Handler: authorizer_admins.handler
+      PackageType: Zip
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
+      Runtime: nodejs12.x
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreLambdaAuthorizerClients:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        ZipFile:
+          Fn::Join:
+            [
+              "",
+              [
+                "const AWS = require('aws-sdk');",
+                "const dynamo = new AWS.DynamoDB.DocumentClient();",
+                "const TABLE_NAME = process.env.VINYLS_TABLE;",
+                "exports.handler = async (event, context) => {",
+                "};",
+              ],
+            ]
+      Description: Lambda Authorizer for Client users
+      FunctionName: VinylStoreLambdaFunctionAuthorizerClients
+      Handler: authorizer_clients.handler
+      PackageType: Zip
+      Role: !GetAtt VinylStoreRoleLambdas.Arn
+      Runtime: nodejs12.x
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+
+  #LAMBDA PERMISSIONS - AUTHORIZERS
+  VinylStoreLambdaAuthorizerAdminsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaAuthorizerAdmins.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaAuthorizerClientsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaAuthorizerClients.Arn"
+      Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+
   #LAMBDA FUNCTIONS - CRUD - VINYLS
   VinylStoreLambdaGETVinyls:
     Type: AWS::Lambda::Function
@@ -262,30 +330,30 @@ Resources:
       Description: REST API to handle the Vinyl Store Application requests
       Name:
         Ref: APIName
-      Policy:
-        Version: "2012-10-17"
-        Statement:
-          - Effect: Allow
-            Principal:
-              AWS:
-                - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
-            Action:
-              - execute-api:Invoke
-            Resource: !Sub execute-api:/${EnvironmentName}/*/*
-          - Effect: Allow
-            Principal:
-              AWS:
-                - !GetAtt VinylStoreCognitoIAMRoleClients.Arn
-            Action:
-              - execute-api:Invoke
-            Resource: !Sub execute-api:/${EnvironmentName}/GET/*
-          - Effect: Allow
-            Principal:
-              AWS:
-                - "*"
-            Action:
-              - execute-api:Invoke
-            Resource: !Sub execute-api:/${EnvironmentName}/OPTIONS/*
+      # Policy:
+      #   Version: "2012-10-17"
+      #   Statement:
+      #     - Effect: Allow
+      #       Principal:
+      #         AWS:
+      #           - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
+      #       Action:
+      #         - execute-api:Invoke
+      #       Resource: !Sub execute-api:/${EnvironmentName}/*/*
+      #     - Effect: Allow
+      #       Principal:
+      #         AWS:
+      #           - !GetAtt VinylStoreCognitoIAMRoleClients.Arn
+      #       Action:
+      #         - execute-api:Invoke
+      #       Resource: !Sub execute-api:/${EnvironmentName}/GET/*
+      #     - Effect: Allow
+      #       Principal:
+      #         AWS:
+      #           - "*"
+      #       Action:
+      #         - execute-api:Invoke
+      #       Resource: !Sub execute-api:/${EnvironmentName}/OPTIONS/*
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -310,6 +378,78 @@ Resources:
       - VinylStoreAPIGatewayMethodOPTIONSPresignedURLS
       - VinylStoreAPIGatewayMethodGETPresignedURLS
 
+  #API GATEWAY - AUTHORIZER RESOURCES
+  VinylStoreAPIGatewayAuthorizerAdminRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      Policies:
+        - PolicyName: VinylStoreAPIGatewayAuthorizerAdminRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "lambda:InvokeFunction"
+                Resource: !GetAtt VinylStoreLambdaAuthorizerAdmins.Arn
+      RoleName: VinylStoreAPIGatewayAuthorizerAdminRole
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreAPIGatewayAuthorizerAdmin:
+    Type: AWS::ApiGateway::Authorizer
+    Properties: 
+      AuthorizerUri: !Sub "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${VinylStoreLambdaAuthorizerAdmins.Arn}/invocations"
+      IdentitySource: method.request.header.Authorization
+      Name: VinylStoreAPIGatewayAuthorizerAdmin
+      RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
+      Type: TOKEN
+      AuthorizerCredentials: !GetAtt VinylStoreAPIGatewayAuthorizerAdminRole.Arn
+  VinylStoreAPIGatewayAuthorizerClientRole:
+    Type: AWS::IAM::Role
+    Properties: 
+      AssumeRolePolicyDocument: 
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - apigateway.amazonaws.com
+            Action:
+              - "sts:AssumeRole"
+      Path: /
+      Policies:
+        - PolicyName: VinylStoreAPIGatewayAuthorizerClientRolePolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action: "lambda:InvokeFunction"
+                Resource: !GetAtt VinylStoreLambdaAuthorizerClients.Arn
+      RoleName: VinylStoreAPIGatewayAuthorizerClientRole
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreAPIGatewayAuthorizerClient:
+    Type: AWS::ApiGateway::Authorizer
+    Properties: 
+      AuthorizerUri: !Sub "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${VinylStoreLambdaAuthorizerClients.Arn}/invocations"
+      IdentitySource: method.request.header.Authorization
+      Name: VinylStoreAPIGatewayAuthorizerClient
+      RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
+      Type: TOKEN
+      AuthorizerCredentials: !GetAtt VinylStoreAPIGatewayAuthorizerClientRole.Arn
+
   #API Gateway - VINYLS RESOURCES
   VinylStoreAPIGatewayResourceVinyls:
     Type: AWS::ApiGateway::Resource
@@ -320,7 +460,8 @@ Resources:
   VinylStoreAPIGatewayMethodGETVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: AWS_IAM
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerClient
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: GET
@@ -335,7 +476,8 @@ Resources:
   VinylStoreAPIGatewayMethodUPDATEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: AWS_IAM
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerAdmin
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: PUT
@@ -350,7 +492,8 @@ Resources:
   VinylStoreAPIGatewayMethodPOSTVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: AWS_IAM
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerAdmin
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: POST
@@ -365,7 +508,8 @@ Resources:
   VinylStoreAPIGatewayMethodDELETEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
-      AuthorizationType: AWS_IAM
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerAdmin
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ResourceId: !Ref "VinylStoreAPIGatewayResourceVinyls"
       HttpMethod: DELETE
