@@ -710,7 +710,7 @@ Resources:
             Sid: PrivateAccessGet
             Principal:
               AWS: 
-                - !GetAtt VinylStoreRoleLambdas.Arn
+                - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
             Action: 's3:GetObject'
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketLambdaLayersName}/*
 
