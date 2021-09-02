@@ -35,6 +35,9 @@ variables:
   VINYL_STORE_S3_BUCKET_IMAGES_NAME: $(VinylStoreS3BucketImagesName)
   VINYL_STORE_LAMBDA_GET_PRESIGNED_URLS_SCRIPT_NAME: $(VinylStoreLambdaGETPresignedURLSScriptName)
   LAMBDA_FUNC_GET_PRESIGNED_URLS_NAME: $(LambdaFuncGETPresignedURLSName)
+  VINYL_STORE_S3_BUCKET_LAMBDA_LAYERS_NAME: $(VinylStoreS3BucketLambdaLayersName)
+  VINYL_STORE_LAMBDA_LAYER_AUTHORIZERS_KEY: $(VinylStoreLambdaLayerAuthorizersKey)
+
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -101,6 +104,10 @@ jobs:
               ParameterValue: $(VINYL_STORE_LAMBDA_GET_PRESIGNED_URLS_SCRIPT_NAME)
             - ParameterKey: LambdaFuncGETPresignedURLSName
               ParameterValue: $(LAMBDA_FUNC_GET_PRESIGNED_URLS_NAME)
+            - ParameterKey: VinylStoreS3BucketLambdaLayersName
+              ParameterValue: ${VINYL_STORE_S3_BUCKET_LAMBDA_LAYERS_NAME}
+            - ParameterKey: VinylStoreLambdaLayerAuthorizersKey
+              ParameterValue: ${VINYL_STORE_LAMBDA_LAYER_AUTHORIZERS_KEY}
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
