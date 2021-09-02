@@ -689,18 +689,18 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
-      CorsConfiguration:
-        CorsRules:
-          - AllowedHeaders:
-              - "*"
-            AllowedMethods:
-              - GET
-              - PUT
-              - POST
-              - DELETE
-            AllowedOrigins:
-              - "*"
-            Id: VinylStoreS3BucketLambdaLayersCORSRule
+      # CorsConfiguration:
+      #   CorsRules:
+      #     - AllowedHeaders:
+      #         - "*"
+      #       AllowedMethods:
+      #         - GET
+      #         - PUT
+      #         - POST
+      #         - DELETE
+      #       AllowedOrigins:
+      #         - "*"
+      #       Id: VinylStoreS3BucketLambdaLayersCORSRule
       Tags:
         - Key: user
           Value: !Ref UsernameTag
