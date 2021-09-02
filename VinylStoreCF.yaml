@@ -704,6 +704,8 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
+    DependsOn:
+      - VinylStoreS3BucketImages
   VinylStoreS3BucketLambdaLayersBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
