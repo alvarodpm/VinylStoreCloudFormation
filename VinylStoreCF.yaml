@@ -312,6 +312,11 @@ Resources:
                 Resource: !GetAtt VinylStoreS3BucketImages.Arn
               - Effect: Allow
                 Action:
+                  - s3:GetObject
+                  - s3:ListObjects
+                Resource: !GetAtt VinylStoreS3BucketLambdaLayers.Arn
+              - Effect: Allow
+                Action:
                   - logs:CreateLogStream
                   - logs:CreateLogGroup
                   - logs:PutLogEvents
@@ -692,6 +697,7 @@ Resources:
               - GET
               - PUT
               - POST
+              - DELETE
             AllowedOrigins:
               - "*"
             Id: VinylStoreS3BucketLambdaLayersCORSRule
