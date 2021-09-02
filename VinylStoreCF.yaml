@@ -24,6 +24,8 @@ Resources:
       PackageType: Zip
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Runtime: nodejs12.x
+      # Layers:
+      #   - !Ref VinylStoreLambdaLayerAuthorizers
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -49,6 +51,8 @@ Resources:
       PackageType: Zip
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Runtime: nodejs12.x
+      # Layers:
+      #   - !Ref VinylStoreLambdaLayerAuthorizers
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -254,6 +258,18 @@ Resources:
       FunctionName: !GetAtt "VinylStoreLambdaGETPresignedURLs.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
+
+  #LAMBDA LAYERS - AUTHORIZERS
+  # VinylStoreLambdaLayerAuthorizers:
+  #   Type: AWS::Lambda::LayerVersion
+  #   Properties:
+  #     CompatibleRuntimes:
+  #       - nodejs12.x
+  #     Content:
+  #       S3Bucket: !Ref VinylStoreS3BucketLambdaLayers
+  #       S3Key: !Ref VinylStoreLambdaLayerAuthorizersKey
+  #     Description: Lambda Layer containing the modules needed in Lambda Authorizer Functions
+  #     LayerName: VinylStoreLambdaLayerAuthorizers
 
   #LAMBDA ROLE
   VinylStoreRoleLambdas:
@@ -606,7 +622,7 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
 
-  #S3 BUCKET IMAGES
+  #S3 BUCKET - IMAGES
   VinylStoreS3BucketImages:
     Type: AWS::S3::Bucket
     Properties:
@@ -625,6 +641,7 @@ Resources:
               - GET
               - PUT
               - POST
+              - DELETE
             AllowedOrigins:
               - "*"
             Id: VinylStoreS3BucketImagesCORSRule
@@ -655,6 +672,47 @@ Resources:
             Action:
               - s3:PutObject
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
+
+  #S3 BUCKET - LAMBDA LAYERS
+  VinylStoreS3BucketLambdaLayers:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: !Ref VinylStoreS3BucketLambdaLayersName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - "*"
+            Id: VinylStoreS3BucketLambdaLayersCORSRule
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreS3BucketLambdaLayersBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref VinylStoreS3BucketLambdaLayersName
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Sid: PrivateAccessGet
+            Principal:
+              AWS: 
+                - !GetAtt VinylStoreRoleLambdas.Arn
+            Action: 's3:GetObject'
+            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketLambdaLayersName}/*
 
   #CLOUDFRONT RESOURCES
   VinylStoreCloudFrontS3Bucket:
@@ -987,11 +1045,15 @@ Parameters:
     Type: String
   VinylStoreS3BucketImagesName:
     Type: String
+  VinylStoreS3BucketLambdaLayersName:
+    Type: String
   VinylStoreCognitoDomain:
     Type: String
     MinLength: 3
     MaxLength: 63
     AllowedPattern: ^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$
+  VinylStoreLambdaLayerAuthorizersKey:
+    Type: String
 Outputs:
   VinylStoreCognitoUserPoolID:
     Value: !Ref VinylStoreCognitoUserPool
