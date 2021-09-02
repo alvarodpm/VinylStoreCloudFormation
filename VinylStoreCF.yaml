@@ -692,7 +692,6 @@ Resources:
               - GET
               - PUT
               - POST
-              - DELETE
             AllowedOrigins:
               - "*"
             Id: VinylStoreS3BucketLambdaLayersCORSRule
