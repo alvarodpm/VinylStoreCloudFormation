@@ -405,10 +405,10 @@ Resources:
       Description: Deployment Stage for the Frontend to connect to the API Gateway
       MethodSettings: 
         - DataTraceEnabled: true
-        - HttpMethod: "*"
-        - LoggingLevel: "INFO"
-        - MetricsEnabled: true
-        - ResourcePath: "/*"
+          HttpMethod: "*"
+          LoggingLevel: "INFO"
+          MetricsEnabled: true
+          ResourcePath: "/*"
       RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
       StageName: !Ref EnvironmentName
       Tags:
