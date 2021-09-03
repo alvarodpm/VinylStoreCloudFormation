@@ -389,7 +389,7 @@ Resources:
     Properties:
       Description: Deployment for the Frontend to connect to the API Gateway
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
-      StageName: !Ref "EnvironmentName"
+      #StageName: !Ref "EnvironmentName"
     DependsOn:
       - VinylStoreAPIGatewayMethodGETVinyls
       - VinylStoreAPIGatewayMethodUPDATEVinyls
@@ -398,6 +398,22 @@ Resources:
       - VinylStoreAPIGatewayMethodOPTIONSVinyls
       - VinylStoreAPIGatewayMethodOPTIONSPresignedURLS
       - VinylStoreAPIGatewayMethodGETPresignedURLS
+  VinylStoreAPIGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties: 
+      DeploymentId: !Ref VinylStoreAPIGatewayDeployment
+      Description: Deployment Stage for the Frontend to connect to the API Gateway
+      MethodSettings: 
+        - DataTraceEnabled: true
+        - HttpMethod: "*"
+        - LoggingLevel: "INFO"
+        - MetricsEnabled: true
+        - ResourcePath: "/*"
+      RestApiId: !Ref VinylStoreAPIGatewayRESTAPI
+      StageName: !Ref EnvironmentName
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
 
   #API GATEWAY - AUTHORIZER RESOURCES
   VinylStoreAPIGatewayAuthorizerAdminRole:
