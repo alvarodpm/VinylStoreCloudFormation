@@ -713,6 +713,7 @@ Resources:
                 - !GetAtt VinylStoreRoleLambdas.Arn
             Action:
               - s3:PutObject
+              - s3:DeleteObject
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
 
   #S3 BUCKET - LAMBDA LAYERS
