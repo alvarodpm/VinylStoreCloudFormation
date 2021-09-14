@@ -55,7 +55,7 @@ jobs:
           awsCredentials: 'Deployment Service Connection'
           regionName: 'us-east-1'
           bucketName: 'vinylstore-s3-bucket-cloudformation'
-          sourceFolder: VinylStoreCF.yaml
+          globExpressions: VinylStoreCF.yaml
           createBucket: true
       - task: CloudFormationCreateOrUpdateStack@1
         displayName: 'Create/Update Stack: plata-marquez-alvaro-VinylStore-stack'
