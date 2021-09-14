@@ -49,14 +49,23 @@ jobs:
   steps:
       - checkout: self
         clean: true
+      - task: S3Upload@1
+        displayName: 'S3 Upload: CloudFormation Template'
+        inputs:
+          awsCredentials: '${{ parameters.account }}'
+          regionName: 'us-east-1'
+          bucketName: 'vinylstore-s3-bucket-cloudformation'
+          sourceFolder: VinylStoreCF.yaml
+          createBucket: true
       - task: CloudFormationCreateOrUpdateStack@1
         displayName: 'Create/Update Stack: plata-marquez-alvaro-VinylStore-stack'
         inputs:
           awsCredentials: '${{ parameters.account }}'
           regionName: 'us-east-1'
           stackName: plata-marquez-alvaro-VinylStore-stack
-          templateSource: 'file'
-          templateFile: '$(cfn-template)' 
+          templateSource: 's3'
+          s3BucketName: 'vinylstore-s3-bucket-cloudformation'
+          s3ObjectKey: VinylStoreCF.yaml
           roleARN: arn:aws:iam::933005959117:role/CloudFormationADRole
           templateParametersSource: "inline"
           templateParameters: |
