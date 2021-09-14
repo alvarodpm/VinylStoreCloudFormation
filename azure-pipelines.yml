@@ -52,7 +52,7 @@ jobs:
       - task: S3Upload@1
         displayName: 'S3 Upload: CloudFormation Template'
         inputs:
-          awsCredentials: '${{ parameters.account }}'
+          awsCredentials: 'Deployment Service Connection'
           regionName: 'us-east-1'
           bucketName: 'vinylstore-s3-bucket-cloudformation'
           sourceFolder: VinylStoreCF.yaml
