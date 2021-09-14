@@ -435,6 +435,13 @@ Resources:
       ManagedPolicyArns:
         - >-
           arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
+  VinylStoreWEBACLAssociationAPIGatewayWAF:
+    Type: "AWS::WAFRegional::WebACLAssociation"
+    Properties:
+      ResourceArn: !Sub 
+        - arn:aws:apigateway:us-east-1::/restapis/${api}/stages/${EnvironmentName}
+        - api: !Ref VinylStoreAPIGatewayRESTAPI
+      WebACLId: !Ref VinylStoreWAFRegionalOwaspACL
 
   #API GATEWAY - AUTHORIZER RESOURCES
   VinylStoreAPIGatewayAuthorizerAdminRole:
