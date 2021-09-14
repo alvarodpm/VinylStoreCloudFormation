@@ -837,8 +837,7 @@ Resources:
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
         DefaultRootObject: /index.html
-        DistributionConfig: 
-          WebACLId: !Ref VinylStoreWAFGlobalOwaspACL
+        WebACLId: !Ref VinylStoreWAFGlobalOwaspACL
       Tags:
         - Key: user
           Value: !Ref UsernameTag
