@@ -351,7 +351,7 @@ Resources:
         - AttributeName: client_id
           KeyType: HASH
         - AttributeName: vinyl_id
-          KeyType: HASH
+          KeyType: RANGE
       BillingMode: PAY_PER_REQUEST
       Tags:
         - Key: user
