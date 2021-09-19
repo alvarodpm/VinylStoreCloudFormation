@@ -97,12 +97,11 @@ Resources:
       Description: Lambda function created to handle the GET requests of the Vinyl Store application
       Environment:
         Variables:
-          VINYLS_TABLE:
-            Ref: DynamoDBTableName
+          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-    DependsOn: VinylStoreDynamoDBTable
+    DependsOn: VinylStoreDynamoDBTableVinyls
   VinylStoreLambdaUPDATEVinyls:
     Type: AWS::Lambda::Function
     Properties:
@@ -126,12 +125,11 @@ Resources:
       Description: Lambda function created to handle the UPDATE requests of the Vinyl Store application
       Environment:
         Variables:
-          VINYLS_TABLE:
-            Ref: DynamoDBTableName
+          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-    DependsOn: VinylStoreDynamoDBTable
+    DependsOn: VinylStoreDynamoDBTableVinyls
   VinylStoreLambdaPOSTVinyls:
     Type: AWS::Lambda::Function
     Properties:
@@ -155,12 +153,11 @@ Resources:
       Description: Lambda function created to handle the POST requests of the Vinyl Store application
       Environment:
         Variables:
-          VINYLS_TABLE:
-            Ref: DynamoDBTableName
+          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-    DependsOn: VinylStoreDynamoDBTable
+    DependsOn: VinylStoreDynamoDBTableVinyls
   VinylStoreLambdaDELETEVinyls:
     Type: AWS::Lambda::Function
     Properties:
@@ -184,12 +181,11 @@ Resources:
       Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
       Environment:
         Variables:
-          VINYLS_TABLE:
-            Ref: DynamoDBTableName
+          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-    DependsOn: VinylStoreDynamoDBTable
+    DependsOn: VinylStoreDynamoDBTableVinyls
 
   #LAMBDA PERMISSIONS - VINYLS
   VinylStoreLambdaGETVinylsPermission:
@@ -301,7 +297,7 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
-                Resource: !GetAtt VinylStoreDynamoDBTable.Arn
+                Resource: !GetAtt VinylStoreDynamoDBTableVinyls.Arn
               - Effect: Allow
                 Action:
                   - s3:PutObject
@@ -327,17 +323,34 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
 
-  #DYNAMODB TABLE - VINYLS
-  VinylStoreDynamoDBTable:
+  #DYNAMODB TABLES
+  VinylStoreDynamoDBTableVinyls:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName:
-        Ref: DynamoDBTableName
+      TableName: VinylStoreDynamoDBTableVinyls
       AttributeDefinitions:
         - AttributeName: id
           AttributeType: S
       KeySchema:
         - AttributeName: id
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreDynamoDBTableShoppingCart:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: VinylStoreDynamoDBTableShoppingCart
+      AttributeDefinitions:
+        - AttributeName: client_id
+          AttributeType: S
+        - AttributeName: vinyl_id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: client_id
+          KeyType: HASH
+        - AttributeName: vinyl_id
           KeyType: HASH
       BillingMode: PAY_PER_REQUEST
       Tags:
@@ -1547,8 +1560,6 @@ Parameters:
   LambdaFuncPOSTVinylsName:
     Type: String
   LambdaFuncGETPresignedURLSName:
-    Type: String
-  DynamoDBTableName:
     Type: String
   APIName:
     Type: String

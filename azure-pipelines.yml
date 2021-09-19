@@ -19,7 +19,6 @@ variables:
   LAMBDA_FUNC_DELETE_VINYLS_NAME: $(LambdaFuncDELETEVinylsName)
   LAMBDA_FUNC_GET_VINYLS_NAME: $(LambdaFuncGETVinylsName)
   LAMBDA_FUNC_POST_VINYLS_NAME: $(LambdaFuncPOSTVinylsName)
-  DYNAMO_DB_TABLE_NAME: $(DynamoDBTableName)
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
   VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME: $(VinylStoreCloudFrontS3BucketName)
@@ -81,8 +80,6 @@ jobs:
               ParameterValue: $(LAMBDA_FUNC_GET_VINYLS_NAME)
             - ParameterKey: LambdaFuncPOSTVinylsName
               ParameterValue: $(LAMBDA_FUNC_POST_VINYLS_NAME)
-            - ParameterKey: DynamoDBTableName
-              ParameterValue: $(DYNAMO_DB_TABLE_NAME)
             - ParameterKey: APIName
               ParameterValue: $(API_NAME)
             - ParameterKey: EnvironmentName
