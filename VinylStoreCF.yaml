@@ -998,7 +998,7 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       AccessControl: Private
-    #   BucketName: !Ref VinylStoreS3BucketLambdaLayersName
+      BucketName: !Ref VinylStoreS3BucketLambdaLayersName
     #   PublicAccessBlockConfiguration:
     #     BlockPublicAcls: true
     #     BlockPublicPolicy: true
