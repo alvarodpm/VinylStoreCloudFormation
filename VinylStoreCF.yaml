@@ -994,31 +994,31 @@ Resources:
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
 
   #S3 BUCKET - LAMBDA LAYERS
-  # VinylStoreS3BucketLambdaLayers:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     AccessControl: Private
-  #     BucketName: !Ref VinylStoreS3BucketLambdaLayersName
-  #     PublicAccessBlockConfiguration:
-  #       BlockPublicAcls: true
-  #       BlockPublicPolicy: true
-  #       IgnorePublicAcls: true
-  #       RestrictPublicBuckets: true
-  #     CorsConfiguration:
-  #       CorsRules:
-  #         - AllowedHeaders:
-  #             - "*"
-  #           AllowedMethods:
-  #             - GET
-  #             - PUT
-  #             - POST
-  #             - DELETE
-  #           AllowedOrigins:
-  #             - "*"
-  #           Id: VinylStoreS3BucketLambdaLayersCORSRule
-  #     Tags:
-  #       - Key: user
-  #         Value: !Ref UsernameTag
+  VinylStoreS3BucketLambdaLayers:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: Private
+      BucketName: !Ref VinylStoreS3BucketLambdaLayersName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - "*"
+            Id: VinylStoreS3BucketLambdaLayersCORSRule
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
   # VinylStoreS3BucketLambdaLayersBucketPolicy:
   #   Type: AWS::S3::BucketPolicy
   #   Properties:
