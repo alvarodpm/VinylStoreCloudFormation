@@ -543,6 +543,10 @@ Resources:
       - VinylStoreLambdaPOSTVinyls
       - VinylStoreLambdaDELETEVinyls
       - VinylStoreLambdaGETPresignedURLs
+      - VinylStoreLambdaGETShoppingCarts
+      - VinylStoreLambdaUPDATEShoppingCarts
+      - VinylStoreLambdaPOSTShoppingCarts
+      - VinylStoreLambdaDELETEShoppingCarts
   VinylStoreAPIGatewayDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
@@ -557,6 +561,10 @@ Resources:
       - VinylStoreAPIGatewayMethodOPTIONSVinyls
       - VinylStoreAPIGatewayMethodOPTIONSPresignedURLS
       - VinylStoreAPIGatewayMethodGETPresignedURLS
+      - VinylStoreAPIGatewayMethodGETShoppingCarts
+      - VinylStoreAPIGatewayMethodPOSTShoppingCarts
+      - VinylStoreAPIGatewayMethodUPDATEShoppingCarts
+      - VinylStoreAPIGatewayMethodDELETEShoppingCarts
   VinylStoreAPIGatewayStage:
     Type: AWS::ApiGateway::Stage
     Properties:
@@ -830,6 +838,78 @@ Resources:
             method.response.header.Access-Control-Allow-Methods: false
             method.response.header.Access-Control-Allow-Origin: false
 
+  #API Gateway - SHOPPING CARTS RESOURCES
+  VinylStoreAPIGatewayResourceShoppingCarts:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ParentId: !GetAtt "VinylStoreAPIGatewayRESTAPI.RootResourceId"
+      PathPart: ShoppingCarts
+  VinylStoreAPIGatewayMethodGETShoppingCarts:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerClient
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceShoppingCarts"
+      HttpMethod: GET
+      MethodResponses:
+        - StatusCode: "200"
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: "200"
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETShoppingCarts.Arn}/invocations"
+  VinylStoreAPIGatewayMethodUPDATEShoppingCarts:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerClient
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceShoppingCarts"
+      HttpMethod: PUT
+      MethodResponses:
+        - StatusCode: "200"
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: "200"
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATEShoppingCarts.Arn}/invocations"
+  VinylStoreAPIGatewayMethodPOSTShoppingCarts:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerClient
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceShoppingCarts"
+      HttpMethod: POST
+      MethodResponses:
+        - StatusCode: "200"
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: "200"
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOSTShoppingCarts.Arn}/invocations"
+  VinylStoreAPIGatewayMethodDELETEShoppingCarts:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref VinylStoreAPIGatewayAuthorizerClient
+      RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
+      ResourceId: !Ref "VinylStoreAPIGatewayResourceShoppingCarts"
+      HttpMethod: DELETE
+      MethodResponses:
+        - StatusCode: "200"
+      Integration:
+        Type: AWS_PROXY
+        IntegrationResponses:
+          - StatusCode: "200"
+        IntegrationHttpMethod: POST
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETEShoppingCarts.Arn}/invocations"
+
   #S3 BUCKET - IMAGES
   VinylStoreS3BucketImages:
     Type: AWS::S3::Bucket
@@ -1101,7 +1181,8 @@ Resources:
           - Effect: Allow
             Action:
               - execute-api:Invoke
-            Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
+            Resource: 
+              - !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
       PolicyName: VinylStoreCognitoIAMRoleAdminsPolicy
       Roles:
         - !Ref VinylStoreCognitoIAMRoleAdmins
@@ -1114,7 +1195,9 @@ Resources:
           - Effect: Allow
             Action:
               - execute-api:Invoke
-            Resource: !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/*
+            Resource: 
+              - !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/Vinyls
+              - !Sub arn:aws:execute-api:us-east-1:*:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/ShoppingCarts
       PolicyName: VinylStoreCognitoIAMRoleClientsPolicy
       Roles:
         - !Ref VinylStoreCognitoIAMRoleClients
