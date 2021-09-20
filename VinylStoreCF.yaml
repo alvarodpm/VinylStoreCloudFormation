@@ -999,26 +999,26 @@ Resources:
     Properties:
       AccessControl: Private
       BucketName: vinylstore-s3-bucket-layers
-    #   PublicAccessBlockConfiguration:
-    #     BlockPublicAcls: true
-    #     BlockPublicPolicy: true
-    #     IgnorePublicAcls: true
-    #     RestrictPublicBuckets: true
-    #   CorsConfiguration:
-    #     CorsRules:
-    #       - AllowedHeaders:
-    #           - "*"
-    #         AllowedMethods:
-    #           - GET
-    #           - PUT
-    #           - POST
-    #           - DELETE
-    #         AllowedOrigins:
-    #           - "*"
-    #         Id: VinylStoreS3BucketLambdaLayersCORSRule
-    #   Tags:
-    #     - Key: user
-    #       Value: !Ref UsernameTag
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders:
+              - "*"
+            AllowedMethods:
+              - GET
+              - PUT
+              - POST
+              - DELETE
+            AllowedOrigins:
+              - "*"
+            Id: VinylStoreS3BucketLambdaLayersCORSRule
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
   # VinylStoreS3BucketLambdaLayersBucketPolicy:
   #   Type: AWS::S3::BucketPolicy
   #   Properties:
