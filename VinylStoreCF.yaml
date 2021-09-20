@@ -1016,9 +1016,9 @@ Resources:
     #         AllowedOrigins:
     #           - "*"
     #         Id: VinylStoreS3BucketLambdaLayersCORSRule
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
+    #   Tags:
+    #     - Key: user
+    #       Value: !Ref UsernameTag
   # VinylStoreS3BucketLambdaLayersBucketPolicy:
   #   Type: AWS::S3::BucketPolicy
   #   Properties:
