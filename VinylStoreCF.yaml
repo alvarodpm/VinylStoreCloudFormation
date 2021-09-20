@@ -844,7 +844,7 @@ Resources:
     Properties:
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       ParentId: !GetAtt "VinylStoreAPIGatewayRESTAPI.RootResourceId"
-      PathPart: ShoppingCarts
+      PathPart: shopping-carts
   VinylStoreAPIGatewayMethodGETShoppingCarts:
     Type: AWS::ApiGateway::Method
     Properties:
