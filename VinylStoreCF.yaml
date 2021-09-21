@@ -1891,3 +1891,7 @@ Outputs:
   IdentityPoolID:
     Value: !Ref VinylStoreCognitoIdentityPool
     Description: Vinyl Store Cognito Identity Pool ID
+  LambdaExampleArn:
+    Value: !GetAtt VinylStoreLambdaGETVinyls.Arn
+  ExampleAccountId:
+    Value: !Sub ${AWS::AccountId}
