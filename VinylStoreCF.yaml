@@ -391,20 +391,12 @@ Resources:
       FunctionName: !GetAtt "VinylStoreLambdaPOSTShoppingCarts.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreLambdaDELETEShoppingCartsPermissionForAPIGateway:
+  VinylStoreLambdaDELETEShoppingCartsPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt "VinylStoreLambdaDELETEShoppingCarts.Arn"
       Principal: apigateway.amazonaws.com
-    DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreLambdaDELETEShoppingCartsPermissionForDELETEVinylsLambdaFunction:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt "VinylStoreLambdaDELETEShoppingCarts.Arn"
-      Principal: lambda.amazonaws.com
-      SourceArn: !GetAtt "VinylStoreLambdaDELETEVinyls.Arn"
     DependsOn: VinylStoreAPIGatewayDeployment
 
   #LAMBDA LAYERS - AUTHORIZERS
@@ -439,6 +431,11 @@ Resources:
           PolicyDocument:
             Version: 2012-10-17
             Statement:
+              - Effect: Allow
+                Action:
+                  - lambda.InvokeFunction
+                  - lambda.InvokeAsync
+                Resource: !GetAtt "VinylStoreLambdaDELETEShoppingCarts.Arn"
               - Effect: Allow
                 Action:
                   - dynamodb:GetItem
