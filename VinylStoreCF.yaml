@@ -365,7 +365,8 @@ Resources:
       Environment:
         Variables:
           SHOPPING_CART_TABLE_NAME: VinylStoreDynamoDBTableShoppingCart
-          GET_VINYLS_LAMBDA_FUNCTION_NAME: LambdaFuncGETVinylsName
+          GET_VINYLS_LAMBDA_FUNCTION_NAME: !Ref LambdaFuncGETVinylsName
+          UPDATE_VINYLS_LAMBDA_FUNCTION_NAME: !Ref LambdaFuncUPDATEVinylsName
       Tags:
         - Key: user
           Value: !Ref UsernameTag
