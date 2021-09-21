@@ -1857,7 +1857,7 @@ Resources:
   #           Type: !Ref ruleAction
   #         Priority: 60
   #         RuleId: !Ref VinylStoreWAFGlobalPathsRule
-
+#comentario para subir
 #PARAMETERS
 Parameters:
   MyAWSRoleARN:
