@@ -181,8 +181,8 @@ Resources:
       Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
       Environment:
         Variables:
-          - VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
-            DELETE_SHOPPING_CART_LAMBDA_FUNCTION_NAME: VinylStoreLambdaFunctionDELETEShoppingCarts
+          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
+          DELETE_SHOPPING_CART_LAMBDA_FUNCTION_NAME: VinylStoreLambdaFunctionDELETEShoppingCarts
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -365,6 +365,7 @@ Resources:
       Environment:
         Variables:
           SHOPPING_CART_TABLE_NAME: VinylStoreDynamoDBTableShoppingCart
+          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
       Tags:
         - Key: user
           Value: !Ref UsernameTag
