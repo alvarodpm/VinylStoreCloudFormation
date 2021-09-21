@@ -182,7 +182,7 @@ Resources:
       Environment:
         Variables:
           - VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
-          - DELETE_SHOPPING_CART_LAMBDA_FUNCTION_NAME: VinylStoreLambdaFunctionDELETEShoppingCarts
+            DELETE_SHOPPING_CART_LAMBDA_FUNCTION_NAME: VinylStoreLambdaFunctionDELETEShoppingCarts
       Tags:
         - Key: user
           Value: !Ref UsernameTag
