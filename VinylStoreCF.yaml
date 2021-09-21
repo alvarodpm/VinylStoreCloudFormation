@@ -483,7 +483,7 @@ Resources:
       Path: /
       Description: Role to assign to all the lambda functions and control their interaction with dynamoDB and the S3 Bucket that contains the images
       Policies:
-        - PolicyName: VinylStoreRoleLambdasPolicy
+        - PolicyName: VinylStoreRoleLambdasToInvokeDELETEShoppingCartPolicy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -525,7 +525,7 @@ Resources:
                   - logs:PutLogEvents
                   - logs:DescribeLogStreams
                 Resource: arn:aws:logs:*:*:*
-      RoleName: VinylStoreRoleLambdas
+      RoleName: VinylStoreRoleLambdasToInvokeDELETEShoppingCart
       Tags:
         - Key: user
           Value: !Ref UsernameTag
