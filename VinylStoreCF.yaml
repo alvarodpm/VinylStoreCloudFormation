@@ -391,12 +391,20 @@ Resources:
       FunctionName: !GetAtt "VinylStoreLambdaPOSTShoppingCarts.Arn"
       Principal: apigateway.amazonaws.com
     DependsOn: VinylStoreAPIGatewayDeployment
-  VinylStoreLambdaDELETEShoppingCartsPermission:
+  VinylStoreLambdaDELETEShoppingCartsPermissionForAPIGateway:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !GetAtt "VinylStoreLambdaDELETEShoppingCarts.Arn"
       Principal: apigateway.amazonaws.com
+    DependsOn: VinylStoreAPIGatewayDeployment
+  VinylStoreLambdaDELETEShoppingCartsPermissionForDELETEVinylsLambdaFunction:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt "VinylStoreLambdaDELETEShoppingCarts.Arn"
+      Principal: lambda.amazonaws.com
+      SourceArn: !GetAtt "VinylStoreLambdaDELETEVinyls.Arn"
     DependsOn: VinylStoreAPIGatewayDeployment
 
   #LAMBDA LAYERS - AUTHORIZERS
