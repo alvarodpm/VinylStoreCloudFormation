@@ -489,8 +489,8 @@ Resources:
             Statement:
               - Effect: Allow
                 Action:
-                  - lambda.InvokeFunction
-                  - lambda.InvokeAsync
+                  - lambda:InvokeFunction
+                  - lambda:InvokeAsync
                 Resource: !GetAtt "VinylStoreLambdaDELETEShoppingCarts.Arn"
               - Effect: Allow
                 Action:
