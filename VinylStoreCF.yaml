@@ -177,7 +177,7 @@ Resources:
       FunctionName: !Ref LambdaFuncDELETEVinylsName
       Handler: !Sub ${VinylStoreLambdaDELETEVinylsScriptName}.handler
       Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdas.Arn
+      Role: !GetAtt VinylStoreRoleLambdasToInvokeDELETEShoppingCart.Arn
       Description: Lambda function created to handle the DELETE requests of the Vinyl Store application
       Environment:
         Variables:
@@ -413,6 +413,62 @@ Resources:
 
   #LAMBDA ROLE
   VinylStoreRoleLambdas:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: /
+      Description: Role to assign to all the lambda functions and control their interaction with dynamoDB and the S3 Bucket that contains the images
+      Policies:
+        - PolicyName: VinylStoreRoleLambdasPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:BatchGetItem
+                  - dynamodb:Scan
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                Resource: 
+                  - !GetAtt VinylStoreDynamoDBTableVinyls.Arn
+                  - !GetAtt VinylStoreDynamoDBTableShoppingCart.Arn
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:GetObject
+                  - s3:DeleteObject
+                  - s3:PutObjectAcl
+                  - s3:ListObjects
+                Resource: !GetAtt VinylStoreS3BucketImages.Arn
+              # - Effect: Allow
+              #   Action:
+              #     - s3:GetObject
+              #     - s3:ListObjects
+              #   Resource: !GetAtt VinylStoreS3BucketLambdaLayers.Arn
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: arn:aws:logs:*:*:*
+      RoleName: VinylStoreRoleLambdas
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
+  VinylStoreRoleLambdasToInvokeDELETEShoppingCart:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
