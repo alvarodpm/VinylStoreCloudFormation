@@ -24,8 +24,8 @@ Resources:
       PackageType: Zip
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Runtime: nodejs12.x
-      # Layers:
-      #   - !Ref VinylStoreLambdaLayerAuthorizers
+      Layers:
+        - !Ref VinylStoreLambdaLayerAuthorizers
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -51,8 +51,8 @@ Resources:
       PackageType: Zip
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Runtime: nodejs12.x
-      # Layers:
-      #   - !Ref VinylStoreLambdaLayerAuthorizers
+      Layers:
+        - !Ref VinylStoreLambdaLayerAuthorizers
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -403,16 +403,16 @@ Resources:
     DependsOn: VinylStoreAPIGatewayDeployment
 
   #LAMBDA LAYERS - AUTHORIZERS
-  # VinylStoreLambdaLayerAuthorizers:
-  #   Type: AWS::Lambda::LayerVersion
-  #   Properties:
-  #     CompatibleRuntimes:
-  #       - nodejs12.x
-  #     Content:
-  #       S3Bucket: !Ref VinylStoreS3BucketLambdaLayers
-  #       S3Key: !Ref VinylStoreLambdaLayerAuthorizersKey
-  #     Description: Lambda Layer containing the modules needed in Lambda Authorizer Functions
-  #     LayerName: VinylStoreLambdaLayerAuthorizers
+  VinylStoreLambdaLayerAuthorizers:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      CompatibleRuntimes:
+        - nodejs12.x
+      Content:
+        S3Bucket: !Ref VinylStoreS3BucketLambdaLayers
+        S3Key: authorizers/nodejs.zip
+      Description: Lambda Layer containing the modules needed in Lambda Authorizer Functions
+      LayerName: VinylStoreLambdaLayerAuthorizers
 
   #LAMBDA ROLE
   VinylStoreRoleLambdas:
@@ -460,11 +460,11 @@ Resources:
                   - s3:PutObjectAcl
                   - s3:ListObjects
                 Resource: !GetAtt VinylStoreS3BucketImages.Arn
-              # - Effect: Allow
-              #   Action:
-              #     - s3:GetObject
-              #     - s3:ListObjects
-              #   Resource: !GetAtt VinylStoreS3BucketLambdaLayers.Arn
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:ListObjects
+                Resource: !GetAtt VinylStoreS3BucketLambdaLayers.Arn
               - Effect: Allow
                 Action:
                   - logs:CreateLogStream
@@ -1027,20 +1027,22 @@ Resources:
       Tags:
         - Key: user
           Value: !Ref UsernameTag
-  # VinylStoreS3BucketLambdaLayersBucketPolicy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     Bucket: !Ref VinylStoreS3BucketLambdaLayersName
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Effect: Allow
-  #           Sid: PrivateAccessGet
-  #           Principal:
-  #             AWS:
-  #               - !GetAtt VinylStoreCognitoIAMRoleAdmins.Arn
-  #           Action: 's3:GetObject'
-  #           Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketLambdaLayersName}/*
+  VinylStoreS3BucketLambdaLayersBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: vinylstore-s3-bucket-layers
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Sid: PrivateAccessGet
+            Principal:
+              AWS:
+                - !GetAtt VinylStoreRoleLambdas.Arn
+            Action: 
+              - s3:GetObject
+              - s3:ListObjects
+            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketLambdaLayersName}/*
 
   #CLOUDFRONT RESOURCES
   VinylStoreCloudFrontS3Bucket:
