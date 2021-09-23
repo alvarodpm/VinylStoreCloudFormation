@@ -1041,7 +1041,7 @@ Resources:
                 - !GetAtt VinylStoreRoleLambdas.Arn
             Action: 
               - s3:GetObject
-            Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketLambdaLayersName}/*
+            Resource: !Sub arn:aws:s3:::vinylstore-s3-bucket-layers/*
 
   #CLOUDFRONT RESOURCES
   VinylStoreCloudFrontS3Bucket:
