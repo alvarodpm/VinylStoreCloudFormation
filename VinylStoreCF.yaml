@@ -1270,7 +1270,7 @@ Resources:
             Resource: 
               - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/Vinyls
               - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/ShoppingCarts
-            - Effect: Allow
+          - Effect: Allow
             Action: 
               - "kms:DescribeCustomKeyStores"
               - "kms:ListKeys"
