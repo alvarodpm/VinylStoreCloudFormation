@@ -472,6 +472,13 @@ Resources:
                   - logs:PutLogEvents
                   - logs:DescribeLogStreams
                 Resource: arn:aws:logs:*:*:*
+              - Effect: Allow
+                Action: 
+                  - "kms:DescribeCustomKeyStores"
+                  - "kms:ListKeys"
+                  - "kms:ListAliases"
+                  - "kms:*"
+                Resource: !GetAtt VinylStoreS3BucketImagesKMSkey.Arn
       RoleName: VinylStoreRoleLambdas
       Tags:
         - Key: user
@@ -972,6 +979,11 @@ Resources:
             AllowedOrigins:
               - "*"
             Id: VinylStoreS3BucketImagesCORSRule
+      BucketEncryption: 
+        ServerSideEncryptionConfiguration: 
+        - ServerSideEncryptionByDefault:
+            KMSMasterKeyID: !GetAtt VinylStoreS3BucketImagesKMSkey.Arn
+            SSEAlgorithm: 'aws:kms'
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -1000,6 +1012,19 @@ Resources:
               - s3:PutObject
               - s3:DeleteObject
             Resource: !Sub arn:aws:s3:::${VinylStoreS3BucketImagesName}/*
+  VinylStoreS3BucketImagesKMSkey:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: 2012-10-17
+        Id: key-s3
+        Statement:
+          - Sid: Permisos para IAM USER
+            Action: 'kms:*'
+            Effect: Allow
+            Principal:
+              AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+            Resource: '*'  
 
   #S3 BUCKET - LAMBDA LAYERS
   VinylStoreS3BucketLambdaLayers:
