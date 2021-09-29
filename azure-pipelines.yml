@@ -59,7 +59,7 @@ jobs:
       - task: CloudFormationCreateOrUpdateStack@1
         displayName: 'Create/Update Stack: plata-marquez-alvaro-VinylStore-stack'
         inputs:
-          awsCredentials: '${{ parameters.account }}'
+          awsCredentials: 'AWS-Azure_DevopsS-Service_Connection'
           regionName: 'us-east-1'
           stackName: plata-marquez-alvaro-VinylStore-stack
           templateSource: 's3'
