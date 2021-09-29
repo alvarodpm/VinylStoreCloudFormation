@@ -1246,10 +1246,10 @@ Resources:
           - Effect: Allow
             Action:
               - execute-api:Invoke
-            Resource: 
+            Resource:
               - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/*
           - Effect: Allow
-            Action: 
+            Action:
               - "kms:DescribeCustomKeyStores"
               - "kms:ListKeys"
               - "kms:ListAliases"
@@ -1372,6 +1372,15 @@ Resources:
           IdentityProvider: !Sub cognito-idp.us-east-1.amazonaws.com/${VinylStoreCognitoUserPool}:${VinylStoreCognitoUserPoolClient}
           AmbiguousRoleResolution: Deny
           Type: Token
+
+  #ECR RESOURCES
+  VinylStoreECRRepositoryGETVinyls:
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: vinylstore-ecr-repository-get-vinyls
+      Tags:
+        - Key: user
+          Value: !Ref UsernameTag
 
   # #WAF
   # ## 1.
