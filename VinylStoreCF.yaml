@@ -720,7 +720,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: "aux"
+        Uri: "http://a04d95fca2b074af28fc1686e5f932bf-1546626442.us-east-1.elb.amazonaws.com:80/api/"
   VinylStoreAPIGatewayMethodUPDATEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
