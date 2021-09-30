@@ -449,7 +449,7 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:DeleteItem
-                Resource: 
+                Resource:
                   - !GetAtt VinylStoreDynamoDBTableVinyls.Arn
                   - !GetAtt VinylStoreDynamoDBTableShoppingCart.Arn
               - Effect: Allow
@@ -473,7 +473,7 @@ Resources:
                   - logs:DescribeLogStreams
                 Resource: arn:aws:logs:*:*:*
               - Effect: Allow
-                Action: 
+                Action:
                   - "kms:DescribeCustomKeyStores"
                   - "kms:ListKeys"
                   - "kms:ListAliases"
@@ -621,7 +621,7 @@ Resources:
   # VinylStoreWEBACLAssociationAPIGatewayWAF:
   #   Type: "AWS::WAFRegional::WebACLAssociation"
   #   Properties:
-  #     ResourceArn: !Sub 
+  #     ResourceArn: !Sub
   #       - arn:aws:apigateway:us-east-1::/restapis/${api}/stages/${EnvironmentName}
   #       - api: !Ref VinylStoreAPIGatewayRESTAPI
   #     WebACLId: !Ref VinylStoreWAFRegionalOwaspACL
@@ -979,11 +979,11 @@ Resources:
             AllowedOrigins:
               - "*"
             Id: VinylStoreS3BucketImagesCORSRule
-      BucketEncryption: 
-        ServerSideEncryptionConfiguration: 
-        - ServerSideEncryptionByDefault:
-            KMSMasterKeyID: !GetAtt VinylStoreS3BucketImagesKMSkey.Arn
-            SSEAlgorithm: 'aws:kms'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: !GetAtt VinylStoreS3BucketImagesKMSkey.Arn
+              SSEAlgorithm: "aws:kms"
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -1020,11 +1020,11 @@ Resources:
         Id: key-s3
         Statement:
           - Sid: Permisos para IAM USER
-            Action: 'kms:*'
+            Action: "kms:*"
             Effect: Allow
             Principal:
               AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
-            Resource: '*'  
+            Resource: "*"
 
   #S3 BUCKET - LAMBDA LAYERS
   VinylStoreS3BucketLambdaLayers:
@@ -1057,14 +1057,14 @@ Resources:
     Properties:
       Bucket: vinylstore-s3-bucket-layers
       PolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
           - Effect: Allow
             Sid: PrivateAccessGet
             Principal:
               AWS:
                 - !GetAtt VinylStoreRoleLambdas.Arn
-            Action: 
+            Action:
               - s3:GetObject
             Resource: !Sub arn:aws:s3:::vinylstore-s3-bucket-layers/*
 
@@ -1267,11 +1267,11 @@ Resources:
           - Effect: Allow
             Action:
               - execute-api:Invoke
-            Resource: 
+            Resource:
               - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/GET/Vinyls
               - !Sub arn:aws:execute-api:us-east-1:${AWS::AccountId}:${VinylStoreAPIGatewayRESTAPI}/${EnvironmentName}/*/ShoppingCarts
           - Effect: Allow
-            Action: 
+            Action:
               - "kms:DescribeCustomKeyStores"
               - "kms:ListKeys"
               - "kms:ListAliases"
@@ -1376,8 +1376,26 @@ Resources:
   #ECR RESOURCES
   VinylStoreECRRepositoryGETVinyls:
     Type: AWS::ECR::Repository
-    Properties: 
+    Properties:
+      ImageTagMutability: MUTABLE
       RepositoryName: vinylstore-ecr-repository-get-vinyls
+      RepositoryPolicyText:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowPushPull
+            Effect: Allow
+            Principal:
+              AWS:
+                - arn:aws:iam::933005959117:user/plata.marquez.alvaro
+                - arn:aws:iam::933005959117:user/rol_deployment
+            Action:
+              - "ecr:GetDownloadUrlForLayer"
+              - "ecr:BatchGetImage"
+              - "ecr:BatchCheckLayerAvailability"
+              - "ecr:PutImage"
+              - "ecr:InitiateLayerUpload"
+              - "ecr:UploadLayerPart"
+              - "ecr:CompleteLayerUpload"
       Tags:
         - Key: user
           Value: !Ref UsernameTag
