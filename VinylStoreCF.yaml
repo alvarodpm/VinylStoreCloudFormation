@@ -716,11 +716,11 @@ Resources:
       MethodResponses:
         - StatusCode: "200"
       Integration:
-        Type: AWS_PROXY
+        Type: HTTP
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub "aux"
+        Uri: "aux"
   VinylStoreAPIGatewayMethodUPDATEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
