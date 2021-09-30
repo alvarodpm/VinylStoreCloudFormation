@@ -546,13 +546,13 @@ Resources:
       ManagedPolicyArns:
         - >-
           arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs
-  # VinylStoreWEBACLAssociationAPIGatewayWAF:
-  #   Type: "AWS::WAFRegional::WebACLAssociation"
-  #   Properties:
-  #     ResourceArn: !Sub
-  #       - arn:aws:apigateway:us-east-1::/restapis/${api}/stages/${EnvironmentName}
-  #       - api: !Ref VinylStoreAPIGatewayRESTAPI
-  #     WebACLId: !Ref VinylStoreWAFRegionalOwaspACL
+  VinylStoreWEBACLAssociationAPIGatewayWAF:
+    Type: "AWS::WAFRegional::WebACLAssociation"
+    Properties:
+      ResourceArn: !Sub
+        - arn:aws:apigateway:us-east-1::/restapis/${api}/stages/${EnvironmentName}
+        - api: !Ref VinylStoreAPIGatewayRESTAPI
+      WebACLId: !Ref VinylStoreWAFRegionalOwaspACL
 
   #API GATEWAY - AUTHORIZER RESOURCES
   VinylStoreAPIGatewayAuthorizerAdminRole:
@@ -1076,7 +1076,7 @@ Resources:
         ViewerCertificate:
           CloudFrontDefaultCertificate: true
         DefaultRootObject: /index.html
-        # WebACLId: !Ref VinylStoreWAFGlobalOwaspACL
+        WebACLId: !Ref VinylStoreWAFGlobalOwaspACL
       Tags:
         - Key: user
           Value: !Ref UsernameTag
@@ -1358,472 +1358,472 @@ Resources:
   # ## OWASP Top 10 A1
   # ## Mitigate SQL Injection Attacks
   # ## Matches attempted SQLi patterns in the URI, QUERY_STRING, BODY, COOKIES
-  # VinylStoreWAFRegionalSQLiSet:
-  #   Type: AWS::WAFRegional::SqlInjectionMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFRegionalSQLiSet
-  #     SqlInjectionMatchTuples:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: HTML_ENTITY_DECODE
-  # VinylStoreWAFGlobalSQLiSet:
-  #   Type: AWS::WAF::SqlInjectionMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFGlobalSQLiSet
-  #     SqlInjectionMatchTuples:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: HTML_ENTITY_DECODE
-  # VinylStoreWAFRegionalSQLiRule:
-  #   Type: AWS::WAFRegional::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFRegional", "mitigatesqli"]]
-  #     Name: !Join ["-", ["VinylStoreWAFRegional", "mitigate-sqli"]]
-  #     Predicates:
-  #       - Type: SqlInjectionMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFRegionalSQLiSet
-  # VinylStoreWAFGlobalSQLiRule:
-  #   Type: AWS::WAF::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFGlobal", "mitigatesqli"]]
-  #     Name: !Join ["-", ["VinylStoreWAFGlobal", "mitigate-sqli"]]
-  #     Predicates:
-  #       - Type: SqlInjectionMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFGlobalSQLiSet
+  VinylStoreWAFRegionalSQLiSet:
+    Type: AWS::WAFRegional::SqlInjectionMatchSet
+    Properties:
+      Name: VinylStoreWAFRegionalSQLiSet
+      SqlInjectionMatchTuples:
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: HTML_ENTITY_DECODE
+  VinylStoreWAFGlobalSQLiSet:
+    Type: AWS::WAF::SqlInjectionMatchSet
+    Properties:
+      Name: VinylStoreWAFGlobalSQLiSet
+      SqlInjectionMatchTuples:
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: HTML_ENTITY_DECODE
+  VinylStoreWAFRegionalSQLiRule:
+    Type: AWS::WAFRegional::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFRegional", "mitigatesqli"]]
+      Name: !Join ["-", ["VinylStoreWAFRegional", "mitigate-sqli"]]
+      Predicates:
+        - Type: SqlInjectionMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFRegionalSQLiSet
+  VinylStoreWAFGlobalSQLiRule:
+    Type: AWS::WAF::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFGlobal", "mitigatesqli"]]
+      Name: !Join ["-", ["VinylStoreWAFGlobal", "mitigate-sqli"]]
+      Predicates:
+        - Type: SqlInjectionMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFGlobalSQLiSet
   # ## 2.
   # ## OWASP Top 10 A2
   # ## Blacklist bad/hijacked JWT tokens or session IDs
   # ## Matches the specific values in the cookie or Authorization header
   # ## for JWT it is sufficient to check the signature
-  # VinylStoreWAFRegionalAuthTokenStringSet:
-  #   Type: AWS::WAFRegional::ByteMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFRegionalAuthTokenStringSet
-  #     ByteMatchTuples:
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: example-session-id
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: authorization
-  #         PositionalConstraint: ENDS_WITH
-  #         TargetString: .TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-  #         TextTransformation: URL_DECODE
-  # VinylStoreWAFGlobalAuthTokenStringSet:
-  #   Type: AWS::WAF::ByteMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFGlobalAuthTokenStringSet
-  #     ByteMatchTuples:
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: example-session-id
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: authorization
-  #         PositionalConstraint: ENDS_WITH
-  #         TargetString: .TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
-  #         TextTransformation: URL_DECODE
-  # VinylStoreWAFRegionalAuthTokenRule:
-  #   Type: AWS::WAFRegional::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFRegional", "badauthtokens"]]
-  #     Name: !Join ["-", ["VinylStoreWAFRegional", "detect-bad-auth-tokens"]]
-  #     Predicates:
-  #       - Type: ByteMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFRegionalAuthTokenStringSet
-  # VinylStoreWAFGlobalAuthTokenRule:
-  #   Type: AWS::WAF::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFGlobal", "badauthtokens"]]
-  #     Name: !Join ["-", ["VinylStoreWAFGlobal", "detect-bad-auth-tokens"]]
-  #     Predicates:
-  #       - Type: ByteMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFGlobalAuthTokenStringSet
+  VinylStoreWAFRegionalAuthTokenStringSet:
+    Type: AWS::WAFRegional::ByteMatchSet
+    Properties:
+      Name: VinylStoreWAFRegionalAuthTokenStringSet
+      ByteMatchTuples:
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          PositionalConstraint: CONTAINS
+          TargetString: example-session-id
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: authorization
+          PositionalConstraint: ENDS_WITH
+          TargetString: .TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+          TextTransformation: URL_DECODE
+  VinylStoreWAFGlobalAuthTokenStringSet:
+    Type: AWS::WAF::ByteMatchSet
+    Properties:
+      Name: VinylStoreWAFGlobalAuthTokenStringSet
+      ByteMatchTuples:
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          PositionalConstraint: CONTAINS
+          TargetString: example-session-id
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: authorization
+          PositionalConstraint: ENDS_WITH
+          TargetString: .TJVA95OrM7E2cBab30RMHrHDcEfxjoYZgeFONFh7HgQ
+          TextTransformation: URL_DECODE
+  VinylStoreWAFRegionalAuthTokenRule:
+    Type: AWS::WAFRegional::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFRegional", "badauthtokens"]]
+      Name: !Join ["-", ["VinylStoreWAFRegional", "detect-bad-auth-tokens"]]
+      Predicates:
+        - Type: ByteMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFRegionalAuthTokenStringSet
+  VinylStoreWAFGlobalAuthTokenRule:
+    Type: AWS::WAF::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFGlobal", "badauthtokens"]]
+      Name: !Join ["-", ["VinylStoreWAFGlobal", "detect-bad-auth-tokens"]]
+      Predicates:
+        - Type: ByteMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFGlobalAuthTokenStringSet
   # ## 3.
   # ## OWASP Top 10 A3
   # ## Mitigate Cross Site Scripting Attacks
   # ## Matches attempted XSS patterns in the URI, QUERY_STRING, BODY, COOKIES
-  # VinylStoreWAFRegionalXSSSet:
-  #   Type: AWS::WAFRegional::XssMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFRegionalXSSSet
-  #     XssMatchTuples:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: HTML_ENTITY_DECODE
-  # VinylStoreWAFGlobalXSSSet:
-  #   Type: AWS::WAF::XssMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFGlobalXSSSet
-  #     XssMatchTuples:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: HTML_ENTITY_DECODE
-  # VinylStoreWAFRegionalXSSRule:
-  #   Type: AWS::WAFRegional::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFRegional", "mitigatexss"]]
-  #     Name: !Join ["-", ["VinylStoreWAFRegional", "mitigate-xss"]]
-  #     Predicates:
-  #       - Type: XssMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFRegionalXSSSet
-  # VinylStoreWAFGlobalXSSRule:
-  #   Type: AWS::WAF::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFGlobal", "mitigatexss"]]
-  #     Name: !Join ["-", ["VinylStoreWAFGlobal", "mitigate-xss"]]
-  #     Predicates:
-  #       - Type: XssMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFGlobalXSSSet
+  VinylStoreWAFRegionalXSSSet:
+    Type: AWS::WAFRegional::XssMatchSet
+    Properties:
+      Name: VinylStoreWAFRegionalXSSSet
+      XssMatchTuples:
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: HTML_ENTITY_DECODE
+  VinylStoreWAFGlobalXSSSet:
+    Type: AWS::WAF::XssMatchSet
+    Properties:
+      Name: VinylStoreWAFGlobalXSSSet
+      XssMatchTuples:
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: HTML_ENTITY_DECODE
+  VinylStoreWAFRegionalXSSRule:
+    Type: AWS::WAFRegional::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFRegional", "mitigatexss"]]
+      Name: !Join ["-", ["VinylStoreWAFRegional", "mitigate-xss"]]
+      Predicates:
+        - Type: XssMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFRegionalXSSSet
+  VinylStoreWAFGlobalXSSRule:
+    Type: AWS::WAF::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFGlobal", "mitigatexss"]]
+      Name: !Join ["-", ["VinylStoreWAFGlobal", "mitigate-xss"]]
+      Predicates:
+        - Type: XssMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFGlobalXSSSet
   # ## 4.
   # ## OWASP Top 10 A4
   # ## Path Traversal, LFI, RFI
   # ## Matches request patterns designed to traverse filesystem paths, and include
   # ## local or remote files
-  # VinylStoreWAFRegionalPathsStringSet:
-  #   Type: AWS::WAFRegional::ByteMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFRegionalPathsStringSet
-  #     ByteMatchTuples:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: HTML_ENTITY_DECODE
-  # VinylStoreWAFGlobalPathsStringSet:
-  #   Type: AWS::WAF::ByteMatchSet
-  #   Properties:
-  #     Name: VinylStoreWAFGlobalPathsStringSet
-  #     ByteMatchTuples:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ../
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: URI
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: HTML_ENTITY_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: URL_DECODE
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         PositionalConstraint: CONTAINS
-  #         TargetString: ://
-  #         TextTransformation: HTML_ENTITY_DECODE
-  # VinylStoreWAFRegionalPathsRule:
-  #   Type: AWS::WAFRegional::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFRegional", "detectrfilfi"]]
-  #     Name: !Join ["-", ["VinylStoreWAFRegional", "detect-rfi-lfi-traversal"]]
-  #     Predicates:
-  #       - Type: ByteMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFRegionalPathsStringSet
-  # VinylStoreWAFGlobalPathsRule:
-  #   Type: AWS::WAF::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFGlobal", "detectrfilfi"]]
-  #     Name: !Join ["-", ["VinylStoreWAFGlobal", "detect-rfi-lfi-traversal"]]
-  #     Predicates:
-  #       - Type: ByteMatch
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFGlobalPathsStringSet
+  VinylStoreWAFRegionalPathsStringSet:
+    Type: AWS::WAFRegional::ByteMatchSet
+    Properties:
+      Name: VinylStoreWAFRegionalPathsStringSet
+      ByteMatchTuples:
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: HTML_ENTITY_DECODE
+  VinylStoreWAFGlobalPathsStringSet:
+    Type: AWS::WAF::ByteMatchSet
+    Properties:
+      Name: VinylStoreWAFGlobalPathsStringSet
+      ByteMatchTuples:
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ../
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: URI
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: HTML_ENTITY_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: URL_DECODE
+        - FieldToMatch:
+            Type: QUERY_STRING
+          PositionalConstraint: CONTAINS
+          TargetString: ://
+          TextTransformation: HTML_ENTITY_DECODE
+  VinylStoreWAFRegionalPathsRule:
+    Type: AWS::WAFRegional::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFRegional", "detectrfilfi"]]
+      Name: !Join ["-", ["VinylStoreWAFRegional", "detect-rfi-lfi-traversal"]]
+      Predicates:
+        - Type: ByteMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFRegionalPathsStringSet
+  VinylStoreWAFGlobalPathsRule:
+    Type: AWS::WAF::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFGlobal", "detectrfilfi"]]
+      Name: !Join ["-", ["VinylStoreWAFGlobal", "detect-rfi-lfi-traversal"]]
+      Predicates:
+        - Type: ByteMatch
+          Negated: false
+          DataId: !Ref VinylStoreWAFGlobalPathsStringSet
   # ## 7.
   # ## OWASP Top 10 A7
   # ## Mitigate abnormal requests via size restrictions
   # ## Enforce consistent request hygene, limit size of key elements
-  # VinylStoreWAFRegionalSizeRestrictionSet:
-  #   Type: AWS::WAFRegional::SizeConstraintSet
-  #   Properties:
-  #     Name: VinylStoreWAFRegionalSizeRestrictionSet
-  #     SizeConstraints:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedURISize
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedQueryStringSize
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedBodySize
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedCookieSize
-  # VinylStoreWAFGlobalSizeRestrictionSet:
-  #   Type: AWS::WAF::SizeConstraintSet
-  #   Properties:
-  #     Name: VinylStoreWAFGlobalSizeRestrictionSet
-  #     SizeConstraints:
-  #       - FieldToMatch:
-  #           Type: URI
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedURISize
-  #       - FieldToMatch:
-  #           Type: QUERY_STRING
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedQueryStringSize
-  #       - FieldToMatch:
-  #           Type: BODY
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedBodySize
-  #       - FieldToMatch:
-  #           Type: HEADER
-  #           Data: cookie
-  #         TextTransformation: NONE
-  #         ComparisonOperator: GT
-  #         Size: !Ref maxExpectedCookieSize
-  # VinylStoreWAFRegionalSizeRestrictionRule:
-  #   Type: AWS::WAFRegional::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFRegional", "restrictsizes"]]
-  #     Name: !Join ["-", ["VinylStoreWAFRegional", "restrict-sizes"]]
-  #     Predicates:
-  #       - Type: SizeConstraint
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFRegionalSizeRestrictionSet
-  # VinylStoreWAFGlobalSizeRestrictionRule:
-  #   Type: AWS::WAF::Rule
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFGlobal", "restrictsizes"]]
-  #     Name: !Join ["-", ["VinylStoreWAFGlobal", "restrict-sizes"]]
-  #     Predicates:
-  #       - Type: SizeConstraint
-  #         Negated: false
-  #         DataId: !Ref VinylStoreWAFGlobalSizeRestrictionSet
+  VinylStoreWAFRegionalSizeRestrictionSet:
+    Type: AWS::WAFRegional::SizeConstraintSet
+    Properties:
+      Name: VinylStoreWAFRegionalSizeRestrictionSet
+      SizeConstraints:
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedURISize
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedQueryStringSize
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedBodySize
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedCookieSize
+  VinylStoreWAFGlobalSizeRestrictionSet:
+    Type: AWS::WAF::SizeConstraintSet
+    Properties:
+      Name: VinylStoreWAFGlobalSizeRestrictionSet
+      SizeConstraints:
+        - FieldToMatch:
+            Type: URI
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedURISize
+        - FieldToMatch:
+            Type: QUERY_STRING
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedQueryStringSize
+        - FieldToMatch:
+            Type: BODY
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedBodySize
+        - FieldToMatch:
+            Type: HEADER
+            Data: cookie
+          TextTransformation: NONE
+          ComparisonOperator: GT
+          Size: !Ref maxExpectedCookieSize
+  VinylStoreWAFRegionalSizeRestrictionRule:
+    Type: AWS::WAFRegional::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFRegional", "restrictsizes"]]
+      Name: !Join ["-", ["VinylStoreWAFRegional", "restrict-sizes"]]
+      Predicates:
+        - Type: SizeConstraint
+          Negated: false
+          DataId: !Ref VinylStoreWAFRegionalSizeRestrictionSet
+  VinylStoreWAFGlobalSizeRestrictionRule:
+    Type: AWS::WAF::Rule
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFGlobal", "restrictsizes"]]
+      Name: !Join ["-", ["VinylStoreWAFGlobal", "restrict-sizes"]]
+      Predicates:
+        - Type: SizeConstraint
+          Negated: false
+          DataId: !Ref VinylStoreWAFGlobalSizeRestrictionSet
   # ## --
   # ## WebACL containing the above rules evaluated in-order
-  # VinylStoreWAFRegionalOwaspACL:
-  #   Type: AWS::WAFRegional::WebACL
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFRegional", "owaspacl"]]
-  #     Name: !Join ["-", ["VinylStoreWAFRegional", "owasp-acl"]]
-  #     DefaultAction:
-  #       Type: ALLOW
-  #     Rules:
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 10
-  #         RuleId: !Ref VinylStoreWAFRegionalSizeRestrictionRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 30
-  #         RuleId: !Ref VinylStoreWAFRegionalAuthTokenRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 40
-  #         RuleId: !Ref VinylStoreWAFRegionalSQLiRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 50
-  #         RuleId: !Ref VinylStoreWAFRegionalXSSRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 60
-  #         RuleId: !Ref VinylStoreWAFRegionalPathsRule
-  # VinylStoreWAFGlobalOwaspACL:
-  #   Type: AWS::WAF::WebACL
-  #   Properties:
-  #     MetricName: !Join ["", ["VinylStoreWAFGlobal", "owaspacl"]]
-  #     Name: !Join ["-", ["VinylStoreWAFGlobal", "owasp-acl"]]
-  #     DefaultAction:
-  #       Type: ALLOW
-  #     Rules:
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 10
-  #         RuleId: !Ref VinylStoreWAFGlobalSizeRestrictionRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 30
-  #         RuleId: !Ref VinylStoreWAFGlobalAuthTokenRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 40
-  #         RuleId: !Ref VinylStoreWAFGlobalSQLiRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 50
-  #         RuleId: !Ref VinylStoreWAFGlobalXSSRule
-  #       - Action:
-  #           Type: !Ref ruleAction
-  #         Priority: 60
-  #         RuleId: !Ref VinylStoreWAFGlobalPathsRule
+  VinylStoreWAFRegionalOwaspACL:
+    Type: AWS::WAFRegional::WebACL
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFRegional", "owaspacl"]]
+      Name: !Join ["-", ["VinylStoreWAFRegional", "owasp-acl"]]
+      DefaultAction:
+        Type: ALLOW
+      Rules:
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 10
+          RuleId: !Ref VinylStoreWAFRegionalSizeRestrictionRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 30
+          RuleId: !Ref VinylStoreWAFRegionalAuthTokenRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 40
+          RuleId: !Ref VinylStoreWAFRegionalSQLiRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 50
+          RuleId: !Ref VinylStoreWAFRegionalXSSRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 60
+          RuleId: !Ref VinylStoreWAFRegionalPathsRule
+  VinylStoreWAFGlobalOwaspACL:
+    Type: AWS::WAF::WebACL
+    Properties:
+      MetricName: !Join ["", ["VinylStoreWAFGlobal", "owaspacl"]]
+      Name: !Join ["-", ["VinylStoreWAFGlobal", "owasp-acl"]]
+      DefaultAction:
+        Type: ALLOW
+      Rules:
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 10
+          RuleId: !Ref VinylStoreWAFGlobalSizeRestrictionRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 30
+          RuleId: !Ref VinylStoreWAFGlobalAuthTokenRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 40
+          RuleId: !Ref VinylStoreWAFGlobalSQLiRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 50
+          RuleId: !Ref VinylStoreWAFGlobalXSSRule
+        - Action:
+            Type: !Ref ruleAction
+          Priority: 60
+          RuleId: !Ref VinylStoreWAFGlobalPathsRule
 #PARAMETERS
 Parameters:
   MyAWSRoleARN:
