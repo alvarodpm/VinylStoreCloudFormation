@@ -74,34 +74,34 @@ Resources:
     DependsOn: VinylStoreAPIGatewayDeployment
 
   #LAMBDA FUNCTIONS - CRUD - VINYLS
-  VinylStoreLambdaGETVinyls:
-    Type: AWS::Lambda::Function
-    Properties:
-      Code:
-        ZipFile:
-          Fn::Join:
-            [
-              "",
-              [
-                "const AWS = require('aws-sdk');",
-                "const dynamo = new AWS.DynamoDB.DocumentClient();",
-                "const TABLE_NAME = process.env.VINYLS_TABLE;",
-                "exports.handler = async (event, context) => {",
-                "};",
-              ],
-            ]
-      FunctionName: !Ref LambdaFuncGETVinylsName
-      Handler: !Sub ${VinylStoreLambdaGETVinylsScriptName}.handler
-      Runtime: nodejs12.x
-      Role: !GetAtt VinylStoreRoleLambdas.Arn
-      Description: Lambda function created to handle the GET requests of the Vinyl Store application
-      Environment:
-        Variables:
-          VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
-    DependsOn: VinylStoreDynamoDBTableVinyls
+  # VinylStoreLambdaGETVinyls:
+  #   Type: AWS::Lambda::Function
+  #   Properties:
+  #     Code:
+  #       ZipFile:
+  #         Fn::Join:
+  #           [
+  #             "",
+  #             [
+  #               "const AWS = require('aws-sdk');",
+  #               "const dynamo = new AWS.DynamoDB.DocumentClient();",
+  #               "const TABLE_NAME = process.env.VINYLS_TABLE;",
+  #               "exports.handler = async (event, context) => {",
+  #               "};",
+  #             ],
+  #           ]
+  #     FunctionName: !Ref LambdaFuncGETVinylsName
+  #     Handler: !Sub ${VinylStoreLambdaGETVinylsScriptName}.handler
+  #     Runtime: nodejs12.x
+  #     Role: !GetAtt VinylStoreRoleLambdas.Arn
+  #     Description: Lambda function created to handle the GET requests of the Vinyl Store application
+  #     Environment:
+  #       Variables:
+  #         VINYLS_TABLE: VinylStoreDynamoDBTableVinyls
+  #     Tags:
+  #       - Key: user
+  #         Value: !Ref UsernameTag
+  #   DependsOn: VinylStoreDynamoDBTableVinyls
   VinylStoreLambdaUPDATEVinyls:
     Type: AWS::Lambda::Function
     Properties:
@@ -189,13 +189,13 @@ Resources:
     DependsOn: VinylStoreDynamoDBTableVinyls
 
   #LAMBDA PERMISSIONS - VINYLS
-  VinylStoreLambdaGETVinylsPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !GetAtt "VinylStoreLambdaGETVinyls.Arn"
-      Principal: apigateway.amazonaws.com
-    DependsOn: VinylStoreAPIGatewayDeployment
+  # VinylStoreLambdaGETVinylsPermission:
+  #   Type: AWS::Lambda::Permission
+  #   Properties:
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !GetAtt "VinylStoreLambdaGETVinyls.Arn"
+  #     Principal: apigateway.amazonaws.com
+  #   DependsOn: VinylStoreAPIGatewayDeployment
   VinylStoreLambdaUPDATEVinylsPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -553,7 +553,7 @@ Resources:
         - Key: user
           Value: !Ref UsernameTag
     DependsOn:
-      - VinylStoreLambdaGETVinyls
+      #- VinylStoreLambdaGETVinyls
       - VinylStoreLambdaUPDATEVinyls
       - VinylStoreLambdaPOSTVinyls
       - VinylStoreLambdaDELETEVinyls
@@ -569,7 +569,7 @@ Resources:
       RestApiId: !Ref "VinylStoreAPIGatewayRESTAPI"
       #StageName: !Ref "EnvironmentName"
     DependsOn:
-      - VinylStoreAPIGatewayMethodGETVinyls
+      #- VinylStoreAPIGatewayMethodGETVinyls
       - VinylStoreAPIGatewayMethodUPDATEVinyls
       - VinylStoreAPIGatewayMethodPOSTVinyls
       - VinylStoreAPIGatewayMethodDELETEVinyls
@@ -720,7 +720,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: POST
-        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETVinyls.Arn}/invocations"
+        #Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETVinyls.Arn}/invocations"
   VinylStoreAPIGatewayMethodUPDATEVinyls:
     Type: AWS::ApiGateway::Method
     Properties:
@@ -1959,7 +1959,7 @@ Outputs:
     Value: !Ref VinylStoreCognitoIdentityPool
     Description: Vinyl Store Cognito Identity Pool ID
   LambdaExampleArn:
-    Value: !GetAtt VinylStoreLambdaGETVinyls.Arn
+    Value: !GetAtt VinylStoreLambdaUPDATEVinyls.Arn
   ExampleAccountId:
     Value: !Sub ${AWS::AccountId}
   VinylStoreAPIGatewayRESTAPIID:
