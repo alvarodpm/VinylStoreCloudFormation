@@ -1962,3 +1962,7 @@ Outputs:
     Value: !GetAtt VinylStoreLambdaGETVinyls.Arn
   ExampleAccountId:
     Value: !Sub ${AWS::AccountId}
+  VinylStoreAPIGatewayRESTAPIID:
+    Value: !Ref VinylStoreAPIGatewayRESTAPI
+  VinylStoreAPIGatewayResourceVinylsID:
+    Value: !Ref VinylStoreAPIGatewayResourceVinyls
