@@ -716,7 +716,7 @@ Resources:
       MethodResponses:
         - StatusCode: "200"
       Integration:
-        Type: HTTP
+        Type: HTTP_PROXY
         IntegrationResponses:
           - StatusCode: "200"
         IntegrationHttpMethod: GET
