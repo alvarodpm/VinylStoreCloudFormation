@@ -22,8 +22,6 @@ variables:
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
   VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME: $(VinylStoreCloudFrontS3BucketName)
-  VINYL_STORE_LAMBDA_GET_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaGETVinylsScriptName)
-  VINYL_STORE_LAMBDA_POST_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaPOSTVinylsScriptName)
   VINYL_STORE_LAMBDA_DELETE_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaDELETEVinylsScriptName)
   VINYL_STORE_LAMBDA_UPDATE_VINYLS_SCRIPT_NAME: $(VinylStoreLambdaUPDATEVinylsScriptName)
   VINYL_STORE_COGNITO_DOMAIN: $(VinylStoreCognitoDomain)
@@ -86,10 +84,6 @@ jobs:
               ParameterValue: $(ENVIRONMENT_NAME)
             - ParameterKey: VinylStoreCloudFrontS3BucketName
               ParameterValue: $(VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME)
-            - ParameterKey: VinylStoreLambdaGETVinylsScriptName
-              ParameterValue: $(VINYL_STORE_LAMBDA_GET_VINYLS_SCRIPT_NAME)
-            - ParameterKey: VinylStoreLambdaPOSTVinylsScriptName
-              ParameterValue: $(VINYL_STORE_LAMBDA_POST_VINYLS_SCRIPT_NAME)
             - ParameterKey: VinylStoreLambdaDELETEVinylsScriptName
               ParameterValue: $(VINYL_STORE_LAMBDA_DELETE_VINYLS_SCRIPT_NAME)
             - ParameterKey: VinylStoreLambdaUPDATEVinylsScriptName
