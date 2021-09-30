@@ -17,8 +17,6 @@ variables:
   API_GATEWAY_RESOURCE_VINYLS_PATH_PART: $(APIGatewayResourceVinylsPathPart)
   LAMBDA_FUNC_UPDATE_VINYLS_NAME: $(LambdaFuncUPDATEVinylsName)
   LAMBDA_FUNC_DELETE_VINYLS_NAME: $(LambdaFuncDELETEVinylsName)
-  LAMBDA_FUNC_GET_VINYLS_NAME: $(LambdaFuncGETVinylsName)
-  LAMBDA_FUNC_POST_VINYLS_NAME: $(LambdaFuncPOSTVinylsName)
   API_NAME: $(APIName)
   ENVIRONMENT_NAME: $(EnvironmentName)
   VINYL_STORE_CLOUDFRONT_S3_BUCKET_NAME: $(VinylStoreCloudFrontS3BucketName)
@@ -74,10 +72,6 @@ jobs:
               ParameterValue: $(LAMBDA_FUNC_UPDATE_VINYLS_NAME)
             - ParameterKey: LambdaFuncDELETEVinylsName
               ParameterValue: $(LAMBDA_FUNC_DELETE_VINYLS_NAME)
-            - ParameterKey: LambdaFuncGETVinylsName
-              ParameterValue: $(LAMBDA_FUNC_GET_VINYLS_NAME)
-            - ParameterKey: LambdaFuncPOSTVinylsName
-              ParameterValue: $(LAMBDA_FUNC_POST_VINYLS_NAME)
             - ParameterKey: APIName
               ParameterValue: $(API_NAME)
             - ParameterKey: EnvironmentName

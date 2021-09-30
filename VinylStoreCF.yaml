@@ -295,7 +295,7 @@ Resources:
       Environment:
         Variables:
           SHOPPING_CART_TABLE_NAME: VinylStoreDynamoDBTableShoppingCart
-          GET_VINYLS_LAMBDA_FUNCTION_NAME: !Ref LambdaFuncGETVinylsName
+          GET_VINYLS_POD_URL: ""
           UPDATE_VINYLS_LAMBDA_FUNCTION_NAME: !Ref LambdaFuncUPDATEVinylsName
       Tags:
         - Key: user
@@ -1841,8 +1841,6 @@ Parameters:
   LambdaFuncUPDATEVinylsName:
     Type: String
   LambdaFuncDELETEVinylsName:
-    Type: String
-  LambdaFuncGETVinylsName:
     Type: String
   LambdaFuncGETPresignedURLSName:
     Type: String
