@@ -1,0 +1,69 @@
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: main
+parameters:
+  - name: account
+    type: string
+    default: 5bd7e7ed-c091-4182-9caa-931ea7a13fe6
+variables:
+  USERNAME_TAG: $(UsernameTag)
+jobs:
+- job: 'Job_1'
+  displayName: Agent job 1
+  pool:
+      vmImage: vs2017-win2016
+  variables:
+    - name: cfn_pre-template
+      value: '$(System.DefaultWorkingDirectory)/VinylStoreCF_pre.yaml'
+  steps:
+      - checkout: self
+        clean: true
+      - task: S3Upload@1
+        displayName: 'S3 Upload: CloudFormation Pre Template'
+        inputs:
+          awsCredentials: 'Deployment Service Connection'
+          regionName: 'us-east-1'
+          bucketName: 'vinylstore-s3-bucket-cloudformation'
+          globExpressions: VinylStoreCF_pre.yaml
+          createBucket: true
+      - task: CloudFormationCreateOrUpdateStack@1
+        displayName: 'Create/Update Stack: plata-marquez-alvaro-VinylStore-stack'
+        inputs:
+          awsCredentials: 'AWS-Azure_DevopsS-Service_Connection'
+          regionName: 'us-east-1'
+          stackName: plata-marquez-alvaro-VinylStore-stack
+          templateSource: 's3'
+          s3BucketName: 'vinylstore-s3-bucket-cloudformation'
+          s3ObjectKey: VinylStoreCF_pre.yaml
+          roleARN: arn:aws:iam::933005959117:role/CloudFormationADRole
+          templateParametersSource: "inline"
+          templateParameters: |
+            - ParameterKey: UsernameTag
+          tags: '
+          azure-devops:pipeline-id=$(System.DefinitionId)
+          azure-devops:creator-email=$(Build.RequestedForEmail)
+          azure-devops:repository=$(Build.Repository.Name)'
+      - task: TriggerPipeline@1
+        displayName: 'Trigger Azure DevOps Pipeline: Lambda Layers'
+        inputs:
+          connectedServiceName: d2c650d8-0a29-4e79-838f-e1441ff4dea6
+          project: 467fc0ed-9936-4040-ab19-be5f354cb796
+          Pipeline: Build
+          buildDefinition: Vinyl Store Microservices Lambda Layers
+      - task: TriggerPipeline@1
+        displayName: 'Trigger Azure DevOps Pipeline: UPDATE Stack'
+        inputs:
+          connectedServiceName: d2c650d8-0a29-4e79-838f-e1441ff4dea6
+          project: 467fc0ed-9936-4040-ab19-be5f354cb796
+          Pipeline: Build
+          buildDefinition: Vinyl Store CloudFormation Update Stack Pipeline
+      - task: TriggerPipeline@1
+        displayName: 'Trigger Azure DevOps Pipeline: Complete Backend'
+        inputs:
+          connectedServiceName: d2c650d8-0a29-4e79-838f-e1441ff4dea6
+          project: 467fc0ed-9936-4040-ab19-be5f354cb796
+          Pipeline: Build
+          buildDefinition: Vinyl Store Backend Pipeline
+...
