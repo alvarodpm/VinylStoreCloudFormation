@@ -59,11 +59,4 @@ jobs:
           project: 467fc0ed-9936-4040-ab19-be5f354cb796
           Pipeline: Build
           buildDefinition: Vinyl Store CloudFormation Update Stack Pipeline
-      - task: TriggerPipeline@1
-        displayName: 'Trigger Azure DevOps Pipeline: Complete Backend'
-        inputs:
-          connectedServiceName: d2c650d8-0a29-4e79-838f-e1441ff4dea6
-          project: 467fc0ed-9936-4040-ab19-be5f354cb796
-          Pipeline: Build
-          buildDefinition: Vinyl Store Backend Pipeline
 ...
