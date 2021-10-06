@@ -1302,36 +1302,11 @@ Resources:
           Type: Token
 
   #ECR RESOURCES
-  VinylStoreECRRepositoryGETVinyls:
+  VinylStoreECRRepositoryVinyls:
     Type: AWS::ECR::Repository
     Properties:
       ImageTagMutability: MUTABLE
-      RepositoryName: vinylstore-ecr-repository-get-vinyls
-      RepositoryPolicyText:
-        Version: "2012-10-17"
-        Statement:
-          - Sid: AllowPushPull
-            Effect: Allow
-            Principal:
-              AWS:
-                - arn:aws:iam::933005959117:user/plata.marquez.alvaro
-                - arn:aws:iam::933005959117:user/rol_deployment
-            Action:
-              - "ecr:GetDownloadUrlForLayer"
-              - "ecr:BatchGetImage"
-              - "ecr:BatchCheckLayerAvailability"
-              - "ecr:PutImage"
-              - "ecr:InitiateLayerUpload"
-              - "ecr:UploadLayerPart"
-              - "ecr:CompleteLayerUpload"
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
-  VinylStoreECRRepositoryPOSTVinyls:
-    Type: AWS::ECR::Repository
-    Properties:
-      ImageTagMutability: MUTABLE
-      RepositoryName: vinylstore-ecr-repository-post-vinyls
+      RepositoryName: vinylstore-ecr-repository-vinyls
       RepositoryPolicyText:
         Version: "2012-10-17"
         Statement:
