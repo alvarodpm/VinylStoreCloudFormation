@@ -24,9 +24,6 @@ Resources:
       PackageType: Zip
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Runtime: nodejs12.x
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
   VinylStoreLambdaAuthorizerClients:
     Type: "AWS::Lambda::Function"
     Properties:
@@ -49,9 +46,6 @@ Resources:
       PackageType: Zip
       Role: !GetAtt VinylStoreRoleLambdas.Arn
       Runtime: nodejs12.x
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
 
   #LAMBDA ROLE
   VinylStoreRoleLambdas:
@@ -91,9 +85,6 @@ Resources:
                   - logs:DescribeLogStreams
                 Resource: arn:aws:logs:*:*:*
       RoleName: VinylStoreRoleLambdas
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
 
   #S3 BUCKET - LAMBDA LAYERS
   VinylStoreS3BucketLambdaLayers:
@@ -118,9 +109,6 @@ Resources:
             AllowedOrigins:
               - "*"
             Id: VinylStoreS3BucketLambdaLayersCORSRule
-      Tags:
-        - Key: user
-          Value: !Ref UsernameTag
   VinylStoreS3BucketLambdaLayersBucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -136,8 +124,3 @@ Resources:
             Action:
               - s3:GetObject
             Resource: arn:aws:s3:::vinylstore-s3-bucket-layers/*
-
-#PARAMETERS
-Parameters:
-  UsernameTag:
-    Type: String
