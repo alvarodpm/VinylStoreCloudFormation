@@ -650,7 +650,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: GET
         Uri: "http://a04d95fca2b074af28fc1686e5f932bf-1546626442.us-east-1.elb.amazonaws.com:80/api/"
   VinylStoreAPIGatewayMethodUPDATEVinyls:
@@ -670,7 +670,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATEVinyls.Arn}/invocations"
   VinylStoreAPIGatewayMethodPOSTVinyls:
@@ -690,7 +690,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: "http://a04d95fca2b074af28fc1686e5f932bf-1546626442.us-east-1.elb.amazonaws.com:80/api/"
   VinylStoreAPIGatewayMethodDELETEVinyls:
@@ -710,7 +710,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETEVinyls.Arn}/invocations"
   VinylStoreAPIGatewayMethodOPTIONSVinyls:
@@ -768,7 +768,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETPresignedURLs.Arn}/invocations"
   VinylStoreAPIGatewayMethodOPTIONSPresignedURLS:
@@ -826,7 +826,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETShoppingCarts.Arn}/invocations"
   VinylStoreAPIGatewayMethodUPDATEShoppingCarts:
@@ -846,7 +846,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaUPDATEShoppingCarts.Arn}/invocations"
   VinylStoreAPIGatewayMethodPOSTShoppingCarts:
@@ -866,7 +866,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaPOSTShoppingCarts.Arn}/invocations"
   VinylStoreAPIGatewayMethodDELETEShoppingCarts:
@@ -886,7 +886,7 @@ Resources:
         IntegrationResponses:
           - StatusCode: "200"
             ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "*"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaDELETEShoppingCarts.Arn}/invocations"
   VinylStoreAPIGatewayMethodOPTIONSShoppingCarts:
