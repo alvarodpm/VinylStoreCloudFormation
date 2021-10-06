@@ -7,8 +7,6 @@ parameters:
   - name: account
     type: string
     default: 5bd7e7ed-c091-4182-9caa-931ea7a13fe6
-variables:
-  USERNAME_TAG: $(UsernameTag)
 jobs:
 - job: 'Job_1'
   displayName: Agent job 1
@@ -38,9 +36,6 @@ jobs:
           s3BucketName: 'vinylstore-s3-bucket-cloudformation'
           s3ObjectKey: VinylStoreCF_pre.yaml
           roleARN: arn:aws:iam::933005959117:role/CloudFormationADRole
-          templateParametersSource: "inline"
-          templateParameters: |
-            - ParameterKey: UsernameTag
           tags: '
           azure-devops:pipeline-id=$(System.DefinitionId)
           azure-devops:creator-email=$(Build.RequestedForEmail)
