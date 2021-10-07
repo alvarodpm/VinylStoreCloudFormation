@@ -807,8 +807,6 @@ Resources:
         Type: AWS_PROXY
         IntegrationResponses:
           - StatusCode: "200"
-            ResponseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'*'"
         IntegrationHttpMethod: POST
         Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${VinylStoreLambdaGETShoppingCarts.Arn}/invocations"
   VinylStoreAPIGatewayMethodUPDATEShoppingCarts:
